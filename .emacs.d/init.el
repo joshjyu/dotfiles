@@ -10,6 +10,13 @@
 ;; Add paths to load libraries, packages, modules, etc
 (add-to-list 'load-path "~/.emacs.d/modules/")
 
+;; Use exec-path-from-shell package so Emacs env vars look the same as in shell
+(use-package exec-path-from-shell
+  :ensure t)
+;; Set $PATH and exec-path from shell when in GUI frame Emacs
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 ;; Consider built-in packages when updating/installing packages
 (setq package-install-upgrade-built-in t)
 
@@ -24,13 +31,13 @@
 	  (lambda ()
 	    (message "Updating packages now...")))
 
-(setq history-length 25) ; Reduce loading times (default is ?100)
-
 ;; Alt splash screen - splash-screen.el in modules directory
+;; https://github.com/rougier/emacs-splash
 (require 'splash-screen)
 
 (desktop-save-mode 1)    ; Restore session
 (save-place-mode 1)      ; Save place when last closed
+
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
 
@@ -78,40 +85,17 @@
     (global-adaptive-wrap-prefix-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; USEFUL GLOBAL MODES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(savehist-mode 1)        ; Enable saving of minibuffer history
-(icomplete-mode 1)       ; Enable icomplete mode
-(recentf-mode 1)         ; M-x recentf-open-files
-(electric-pair-mode 1)   ; Enable electric pair mode
-
-;; Vertico to enable vertical view in minibuffer
-(use-package vertico
-  :ensure t)
-(setq vertico-resize nil)
-(vertico-mode 1)
-
-;; Marginalia to enable annotations next to entries in the minibuffer
-(use-package marginalia
-  :ensure t)
-(marginalia-mode 1)
-
-;; Enable Company - text completion framework package
-(use-package company
-  :ensure t
-  :config
-  (setq company-idle-delay 0.1
-	company-minimum-prefix-length 1))
-;; Enable Company globally except org-mode b/c drop down is broken in org-mode
-(setq company-global-modes '(not org-mode))
-(global-company-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; BEHAVIOR CHANGES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Default sorting order in ibuffer. Cycle with , key
+(customize-set-value 'ibuffer-default-sorting-mode (quote filename/process))
+
+;; Turn off indent tab mode by default
+(setq-default indent-tabs-mode nil)
+
 ;; Auto focus new window
+;; source: reddit.com/r/emacs/comments/aepvwq/how_to_automatically_switch_focus_to_newly/edsvalc
 (require 'cl-lib)
 (defvar my-display-buffers-no-select '("*Completions*"))
 (define-advice display-buffer (:around (f &rest args) select-window)
@@ -136,6 +120,135 @@
 (load custom-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; USEFUL GLOBAL MODES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(savehist-mode 1)        ; Enable saving of minibuffer history
+(icomplete-mode 1)       ; Enable icomplete mode
+(recentf-mode 1)         ; M-x recentf-open-files
+(electric-pair-mode 1)   ; Enable electric pair mode
+
+;; Minibuffer Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Vertico to enable vertical view in minibuffer
+(use-package vertico
+  :ensure t)
+(setq vertico-resize nil)
+(vertico-mode 1)
+
+;; Marginalia to enable annotations next to entries in the minibuffer
+(use-package marginalia
+  :ensure t)
+(marginalia-mode 1)
+
+(use-package consult
+  :ensure t)
+
+(use-package orderless
+  :ensure t
+  :demand t
+  :after minibuffer 
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
+;; Company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Company - text completion framework package
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0.0
+	company-minimum-prefix-length 1))
+;; Enable company globally except org b/c drop down is broken in org for me
+(setq company-global-modes '(not org-mode))
+(global-company-mode)
+
+;; Company-box - company front-end w/ icons
+(use-package company-box
+  :ensure t
+  :after company
+  :hook (company-mode . company-box-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LSP ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c p"))
+
+(use-package lsp-ui
+  :ensure t
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-doc-position 'bottom))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; WEB MODE ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package web-mode
+  :ensure t
+  :mode "\\.html?\\'" 
+  :mode "\\.css\\'"
+  :mode "\\.phtml\\'"
+  :mode "\\.tpl\\.php\\'"
+  :mode "\\.[agj]sp\\'"
+  :mode "\\.as[cp]x\\'"
+  :mode "\\.erb\\'"
+  :mode "\\.mustache\\'"
+  :mode "\\.djhtml\\'"
+  :hook (web-mode . lsp-deferred)
+  :bind ("C-c C-v" . browse-url-of-buffer)
+  :config
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TYPESCRIPT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package typescript-mode
+  :ensure t
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; PYTHON ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq python-shell-interpreter "python3.12") ; Use python3.12
+
+;; Change default compile value for python-mode
+(add-hook 'python-mode-hook
+	  (lambda ()
+	    (setq-local compile-command
+			(concat "python3 " buffer-file-name))))
+
+;; And now change it for python-ts-mode
+(add-hook 'python-ts-mode-hook
+	  (lambda ()
+	    (setq-local compile-command
+			(concat "python3 " buffer-file-name))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MARKDOWN ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map
+	      ("C-c C-e" . markdown-do)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MAGIT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -143,24 +256,62 @@
   :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; IBUFFER ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Default sorting order in ibuffer. Cycle with , key
-(customize-set-value 'ibuffer-default-sorting-mode (quote filename/process))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; JINX ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package jinx
   :ensure t
-  :hook (emacs-startup . global-jinx-mode)
   ;; Jinx mode-specific keybindings
   :bind (("M-$" . jinx-correct)
 	 ("M-n" . jinx-next)
 	 ("M-p" . jinx-previous)
 	 ("C-M-$" . jinx-languages)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; DIRED ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Add icons in dired mode
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
+(use-package all-the-icons-dired
+  :ensure t)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+
+;; Hide details in dired mode to clean it up
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
+
+;; Do not create new buffers for every directory
+(setf dired-kill-when-opening-new-dired-buffer t)
+;; Copy and delete recursively into directories
+(setq dired-recursive-copies 'always)
+(setq dired-recursive-deletes 'always)
+(setq delete-by-moving-to-trash t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TREESITTER ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Sourcing for treesitter grammars
+(setq treesit-language-source-alist
+      '((python "https://github.com/tree-sitter/tree-sitter-python")
+	(html "https://github.com/tree-sitter/tree-sitter-html")
+	(css "https://github.com/tree-sitter/tree-sitter-css")
+	(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")))
+
+;; Install any grammar libraries not already installed
+(dolist (lang treesit-language-source-alist)
+  (unless (treesit-language-available-p (car lang))
+    (treesit-install-language-grammar (car lang))))
+
+;; Remap major modes to treesitter version
+;; Disabling for now...
+;; (setq major-mode-remap-alist
+;;       '((python-mode . python-ts-mode)
+;; 	(css-mode . css-ts-mode)
+;; 	(javascript-mode . js-ts-mode)
+;; 	(js2-mode . js-ts-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ORG ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -219,92 +370,6 @@
 	org-journal-file-type 'monthly
 	org-journal-file-format "%Y%m.org"
 	org-journal-carryover-items "TODO=\"TODO\"|TODO=\"LT-TODO\"|TODO=\"IDEA\"|TODO=\"MAYBE\"|TODO=\"IN-PROGRESS\"|TODO=\"WAITING\""))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; DIRED ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Add icons in dired mode
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p))
-(use-package all-the-icons-dired
-  :ensure t)
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-
-;; Hide details in dired mode to clean it up
-(add-hook 'dired-mode-hook 'dired-hide-details-mode)
-
-;; Do not create new buffers for every directory
-(setf dired-kill-when-opening-new-dired-buffer t)
-;; Copy and delete recursively into directories
-(setq dired-recursive-copies 'always)
-(setq dired-recursive-deletes 'always)
-(setq delete-by-moving-to-trash t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MARKDOWN ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package markdown-mode
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown")
-  :bind (:map markdown-mode-map
-	      ("C-c C-e" . markdown-do)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; PYTHON ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq python-shell-interpreter "python3.12") ; Use python3.12
-
-;; Change default compile value for python-mode
-(add-hook 'python-mode-hook
-	  (lambda ()
-	    (setq-local compile-command
-			(concat "python3 " buffer-file-name))))
-
-;; And now change it for python-ts-mode
-(add-hook 'python-ts-mode-hook
-	  (lambda ()
-	    (setq-local compile-command
-			(concat "python3 " buffer-file-name))))
-
-;; Eglot on startup with python treesitter mode
-(use-package eglot
-  :ensure t
-  :defer t
-  :hook (python-ts-mode . eglot-ensure))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; JAVASCRIPT ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq js-indent-level 2)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; TREESITTER ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Sourcing for treesitter grammars
-(setq treesit-language-source-alist
-      '((python "https://github.com/tree-sitter/tree-sitter-python")
-	(html "https://github.com/tree-sitter/tree-sitter-html")
-	(css "https://github.com/tree-sitter/tree-sitter-css")
-	(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")))
-
-;; Install any grammar libraries not already installed
-(dolist (lang treesit-language-source-alist)
-  (unless (treesit-language-available-p (car lang))
-    (treesit-install-language-grammar (car lang))))
-
-;; Remap major modes to treesitter version
-(setq major-mode-remap-alist
-      '((python-mode . python-ts-mode)
-	(css-mode . css-ts-mode)
-	(javascript-mode . js-ts-mode)
-	(js2-mode . js-ts-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; THEMING ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -441,3 +506,7 @@
 (global-set-key (kbd "C-c a") #'org-agenda)
 (global-set-key (kbd "C-c c") #'org-capture)
 (global-set-key (kbd "C-c j") #'org-journal-new-date-entry)
+
+;; Global consult keybindings
+(global-set-key (kbd "C-x b") 'consult-buffer)
+(global-set-key (kbd "M-s l") 'consult-line)
