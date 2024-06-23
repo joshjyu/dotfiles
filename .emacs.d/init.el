@@ -32,6 +32,7 @@
 	    (message "Updating packages now...")))
 
 ;; Alt splash screen - splash-screen.el in modules directory
+;; Not included in repo
 ;; https://github.com/rougier/emacs-splash
 (require 'splash-screen)
 
@@ -116,6 +117,7 @@
       )
 
 ;; Move custom-set-* section to separate file
+;; Not included in repo
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
