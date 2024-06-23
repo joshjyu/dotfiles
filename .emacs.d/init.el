@@ -180,7 +180,10 @@
   :ensure t
   :commands (lsp lsp-deferred)
   :init
-  (setq lsp-keymap-prefix "C-c p"))
+  (setq lsp-keymap-prefix "C-c p")
+  :config
+  ;; Do not follow language server indentation
+  (setq lsp-enable-indentation nil))
 
 (use-package lsp-ui
   :ensure t
