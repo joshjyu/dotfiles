@@ -10,6 +10,9 @@
 ;; Add paths to load libraries, packages, modules, etc
 (add-to-list 'load-path "~/.emacs.d/modules/")
 
+;; Consider built-in packages when updating/installing packages
+(setq package-install-upgrade-built-in t)
+
 ;; Automatically update packages on startup
 (use-package auto-package-update
   :ensure t
