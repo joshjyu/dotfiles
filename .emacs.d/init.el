@@ -143,9 +143,11 @@
   :ensure t)
 (marginalia-mode 1)
 
+;; Consult - note the global bindings in global keybindings section
 (use-package consult
   :ensure t)
 
+;; Orderless - orderless completion style
 (use-package orderless
   :ensure t
   :demand t
@@ -153,6 +155,11 @@
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
+
+;; which-key to display keybinding completion option
+(use-package which-key
+  :ensure t)
+(which-key-mode 1)
 
 ;; Company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
