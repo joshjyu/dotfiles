@@ -169,8 +169,6 @@
   :config
   (setq company-idle-delay 0.0
 	company-minimum-prefix-length 1))
-;; Enable company globally except org b/c drop down is broken in org for me
-(setq company-global-modes '(not org-mode))
 (global-company-mode)
 
 ;; Company-box - company front-end w/ icons
