@@ -1,4 +1,5 @@
 ;; Garbage collection threshold - default is 800000 bytes
+;; Helpful info by Emacs maintainer: reddit.com/r/emacs/comments/yzb77m/an_easy_trick_i_found_to_improve_emacs_startup/iwz1vek/
 (setq gc-cons-threshold 4000000)
 ;; Suppress insignificant warnings
 (setq byte-compile-warnings '(not obsolete))
@@ -10,9 +11,6 @@
       inhibit-splash-screen t
       inhibit-startup-screen t
       inhibit-startup-echo-area-message (user-login-name))
-
-(setq default-frame-alist '((fullscreen . maximized)       ; start maximized
-                            (alpha-background . 100)))     ; transparency
 
 (menu-bar-mode -1)                   ; Hide menu bar
 (tool-bar-mode -1)                   ; Hide tool bar

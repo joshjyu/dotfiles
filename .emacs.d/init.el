@@ -20,6 +20,9 @@
       kept-old-versions 1   ; How many of old versions to keep
       )
 
+(setq default-frame-alist '((fullscreen . maximized)       ; start maximized
+                            (alpha-background . 100)))     ; transparency
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
@@ -46,41 +49,11 @@
 	  (lambda ()
 	    (message "Updating packages now...")))
 
-(desktop-save-mode 1)    ; Restore session
-(save-place-mode 1)      ; Save place when last closed
-
 ;; Revert buffers when the underlying file has changed
 (setopt auto-revert-avoid-polling t)
 (setopt auto-revert-interval 5)
 (setopt auto-revert-check-vc-info t)
 (global-auto-revert-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; BASIC GUI CHANGES
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Default font
-(set-face-attribute 'default nil :font "Iosevka Term Curly-11")
-;; Default line spacing is 0
-(setq-default line-spacing 0.1)
-
-;; Put buffer path into the title bar
-(setq frame-title-format
-      '(buffer-file-name "%b - %f"                ; File buffer
-        (dired-directory dired-directory          ; Dired buffer
-         (revert-buffer-function "%b"             ; Buffer Menu
-          ("%b - Dir: " default-directory)))))    ; Plain buffer
-
-;; Clean up & tweak appearance
-(setq visible-bell t)                ; Flash on bell ring
-(global-display-line-numbers-mode 1) ; Show line numbers on side
-(transient-mark-mode 1)              ; Transient mark mode
-(column-number-mode 1)               ; Column number in mode line
-(global-visual-line-mode 1)          ; Soft wrap text at buffer edge
-
-;; Fill-column indicator
-(setq-default fill-column 80)                 ; Set number of columns to use
-(global-display-fill-column-indicator-mode 1) ; Display indicator at fill-column
 
 ;; Make adaptive wrap mode global. Useful in conjunction with visual-line mode.
 (use-package adaptive-wrap
@@ -97,20 +70,6 @@
       turn-on-adaptive-wrap-prefix-mode)
     (global-adaptive-wrap-prefix-mode 1)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; BEHAVIOR CHANGES
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Default sorting order in ibuffer. Cycle with , key
-(customize-set-value 'ibuffer-default-sorting-mode (quote filename/process))
-
-;; Turn off indent tab mode by default
-(setq-default indent-tabs-mode nil)
-
-;; Right click gives context menu
-(when (display-graphic-p)
-  (context-menu-mode))
-
 ;; Auto focus new window
 ;; source: reddit.com/r/emacs/comments/aepvwq/how_to_automatically_switch_focus_to_newly/edsvalc
 (require 'cl-lib)
@@ -123,16 +82,44 @@
       (select-window w))
     w))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; USEFUL GLOBAL MODES
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Put buffer path into the title bar
+(setq frame-title-format
+      '(buffer-file-name "%b - %f"                ; File buffer
+        (dired-directory dired-directory          ; Dired buffer
+         (revert-buffer-function "%b"             ; Buffer Menu
+          ("%b - Dir: " default-directory)))))    ; Plain buffer
 
-(savehist-mode 1)        ; Enable saving of minibuffer history
-(icomplete-mode 1)       ; Enable icomplete mode
-(recentf-mode 1)         ; M-x recentf-open-files
-(electric-pair-mode 1)   ; Enable electric pair mode
+;; Turn off indent tab mode by default
+(setq-default indent-tabs-mode nil)
 
-;; Minibuffer Packages ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Right click gives context menu
+(when (display-graphic-p)
+  (context-menu-mode))
+
+;; Fill-column indicator
+(setq-default fill-column 80)                 ; Set number of columns to use
+(global-display-fill-column-indicator-mode 1) ; Display indicator at fill-column
+
+;; Default sorting order in ibuffer. Cycle with , key
+(customize-set-value 'ibuffer-default-sorting-mode (quote filename/process))
+
+;; Some tweaks
+(setq visible-bell t)                  ; Flash on bell ring
+(pixel-scroll-precision-mode 1)        ; Smoother scrolling
+(global-display-line-numbers-mode 1)   ; Show line numbers on side
+(transient-mark-mode 1)                ; Transient mark mode
+(column-number-mode 1)                 ; Column number in mode line
+(global-visual-line-mode 1)            ; Soft wrap text at buffer edge
+(desktop-save-mode 1)                  ; Restore session
+(save-place-mode 1)                    ; Save place when last closed
+(savehist-mode 1)                      ; Enable saving of minibuffer history
+(icomplete-mode 1)                     ; Enable icomplete mode
+(recentf-mode 1)                       ; M-x recentf-open-files
+(electric-pair-mode 1)                 ; Enable electric pair mode
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MINIBUFFER/COMPLETION PACKAGES
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Vertico to enable vertical view in minibuffer
 (use-package vertico
@@ -158,12 +145,10 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-;; which-key to display keybinding completion option
+;; Which-key to display keybinding completion option
 (use-package which-key
   :ensure t)
 (which-key-mode 1)
-
-;; Company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Company - text completion framework package
 (use-package company
@@ -386,6 +371,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; THEMING
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Default font
+(set-face-attribute 'default nil :font "Iosevka Term Curly-11")
+;; Default line spacing is 0
+(setq-default line-spacing 0.1)
 
 ;; Spacious padding to modify various borders and lines
 (use-package spacious-padding
