@@ -2,13 +2,28 @@
 ;;; STARTUP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Separate custom.el file for customization clutter
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
+;; Add modules path
+(add-to-list 'load-path (concat user-emacs-directory
+                                (convert-standard-filename "modules/")))
+
+;; Save ~ files in a backup directory (instead of buffer's dir)
+(setq backup-directory-alist '(("." . "~/.ebackup/"))
+      backup-by-copying t   ; Don't delink hardlinks
+      version-control t     ; Use version numbers on backups
+      delete-old-versions t ; Auto delete excess backups
+      kept-new-versions 3   ; How many of newest versions to keep
+      kept-old-versions 1   ; How many of old versions to keep
+      )
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (package-initialize t)
-
-;; Add modules path
-(add-to-list 'load-path "~/.emacs.d/modules/")
 
 ;; Use exec-path-from-shell package so Emacs env vars look the same as in shell
 (use-package exec-path-from-shell
@@ -114,20 +129,6 @@
                      #'get-buffer-window my-display-buffers-no-select)))
       (select-window w))
     w))
-
-;; Save ~ files in a backup directory (instead of buffer's dir)
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-      backup-by-copying t   ; Don't delink hardlinks
-      version-control t     ; Use version numbers on backups
-      delete-old-versions t ; Auto delete excess backups
-      kept-new-versions 3   ; How many of newest versions to keep
-      kept-old-versions 1   ; How many of old versions to keep
-      )
-
-;; Move custom-set-* section to separate file
-;; Not included in repo
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; USEFUL GLOBAL MODES
