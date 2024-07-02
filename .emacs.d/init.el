@@ -35,10 +35,7 @@
 (save-place-mode 1)      ; Save place when last closed
 
 ;; Revert buffers when the underlying file has changed
-(setopt auto-revert-avoid-polling t)
-(setopt auto-revert-interval 5)         ; default is 5 seconds
-(setopt auto-revert-check-vc-info t)    ; updates vc info
-(global-auto-revert-mode)
+(global-auto-revert-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; BASIC GUI CHANGES
