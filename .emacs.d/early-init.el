@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Garbage collection threshold - default is 800000 bytes
-(setq gc-cons-threshold 2400000)
+(setq gc-cons-threshold 4000000)
 ;; Suppress insignificant warnings
 (setq byte-compile-warnings '(not obsolete))
 (setq warning-suppress-log-types '((comp) (bytecomp)))
