@@ -97,7 +97,7 @@
   (context-menu-mode))
 
 ;; Fill-column indicator
-(setq-default fill-column 80)                 ; Set number of columns to use
+(setq-default fill-column 81)                 ; Set number of columns to use
 (global-display-fill-column-indicator-mode 1) ; Display indicator at fill-column
 
 ;; Default sorting order in ibuffer. Cycle with , key
@@ -164,10 +164,6 @@
         ("SPC" . corfu-insert-separator)
         ("C-n" . corfu-next)
         ("C-p" . corfu-previous)))
-
-;; Enable auto completion and configure quitting
-(setq corfu-auto t
-      corfu-quit-no-match 'separator)
 
 (use-package corfu-popupinfo
   :after corfu
