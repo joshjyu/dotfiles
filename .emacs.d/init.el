@@ -65,9 +65,6 @@
 
 ;; Clean up & tweak appearance
 (setq visible-bell t)                ; Flash on bell ring
-(tool-bar-mode -1)                   ; Hide tool bar
-(scroll-bar-mode -1)                 ; Hide scroll bar
-(menu-bar-mode -1)                   ; Hide menu bar
 (global-display-line-numbers-mode 1) ; Show line numbers on side
 (transient-mark-mode 1)              ; Transient mark mode
 (column-number-mode 1)               ; Column number in mode line
