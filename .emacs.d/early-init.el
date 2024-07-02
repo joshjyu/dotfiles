@@ -11,6 +11,9 @@
       inhibit-startup-screen t
       inhibit-startup-echo-area-message (user-login-name))
 
+(setq default-frame-alist '((fullscreen . maximized)       ; start maximized
+                            (alpha-background . 100)))     ; transparency
+
 (menu-bar-mode -1)                   ; Hide menu bar
 (tool-bar-mode -1)                   ; Hide tool bar
 (scroll-bar-mode -1)                 ; Hide scroll bar

@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; STARTUP
+;;; BASIC CHANGES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Separate custom.el file for customization clutter
@@ -59,17 +59,10 @@
 ;;; BASIC GUI CHANGES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Start Emacs maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-
 ;; Default font
 (set-face-attribute 'default nil :font "Iosevka Term Curly-11")
 ;; Default line spacing is 0
 (setq-default line-spacing 0.1)
-
-;; Background transparency
-(set-frame-parameter nil 'alpha-background 100)
-(add-to-list 'default-frame-alist '(alpha-background . 100))
 
 ;; Put buffer path into the title bar
 (setq frame-title-format
