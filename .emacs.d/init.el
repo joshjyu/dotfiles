@@ -31,11 +31,6 @@
 	  (lambda ()
 	    (message "Updating packages now...")))
 
-;; Alt splash screen - splash-screen.el in modules directory
-;; Not included in repo
-;; https://github.com/rougier/emacs-splash
-(require 'splash-screen)
-
 (desktop-save-mode 1)    ; Restore session
 (save-place-mode 1)      ; Save place when last closed
 
