@@ -13,11 +13,11 @@
 
 ;; Save ~ files in a backup directory (instead of buffer's dir)
 (setq backup-directory-alist '(("." . "~/.ebackup/"))
-      backup-by-copying t   ; Don't delink hardlinks
-      version-control t     ; Use version numbers on backups
-      delete-old-versions t ; Auto delete excess backups
-      kept-new-versions 3   ; How many of newest versions to keep
-      kept-old-versions 1   ; How many of old versions to keep
+      backup-by-copying t          ; Don't delink hardlinks
+      version-control t            ; Use version numbers on backups
+      delete-old-versions t        ; Auto delete excess backups
+      kept-new-versions 3          ; How many of newest versions to keep
+      kept-old-versions 1          ; How many of old versions to keep
       )
 
 (setq default-frame-alist '((fullscreen . maximized)       ; start maximized
@@ -98,7 +98,6 @@
 
 ;; Fill-column indicator
 (setq-default fill-column 81)                 ; Set number of columns to use
-(global-display-fill-column-indicator-mode 1) ; Display indicator at fill-column
 
 ;; Default sorting order in ibuffer. Cycle with , key
 (customize-set-value 'ibuffer-default-sorting-mode (quote filename/process))
