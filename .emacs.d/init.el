@@ -329,13 +329,17 @@
 (setq org-capture-templates
        `(("i" "IDEA" entry (file+headline "inbox.org" "IDEAs")
         ,(concat "* IDEA %?\n"
-                 "/Entered on/ %U"))
+                 "/Entered on/ %U")
+        :prepend t)
 	 ("t" "TODO" entry (file+headline "inbox.org" "TODOs")
 	  ,(concat "* TODO %?\n"
-		   "/Entered on/ %U"))
+		   "/Entered on/ %U")
+          :prepend t)
 	 ("l" "LT-TODO" entry (file+headline "inbox.org" "LT-TODOs")
 	  ,(concat "* LT-TODO %?\n"
-		   "/Entered on/ %U"))))
+		   "/Entered on/ %U")
+          :prepend t)
+         ))
 
 ;; Below line in case I want to add custom tags
 ;; (setq org-tag-alist '(("@work" . ?w) ("@home" . ?h) ("@laptop" . ?l))
