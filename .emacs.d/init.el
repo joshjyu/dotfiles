@@ -145,6 +145,10 @@
   :config
   (setq company-idle-delay 0.0
         company-minimum-prefix-length 2))
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "<return>") nil)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "<tab>") #'company-complete-selection))
 (global-company-mode)
 
 ;; Company-box - company frontend w/ icons
@@ -190,8 +194,10 @@
   :mode "\\.erb\\'"
   :mode "\\.mustache\\'"
   :mode "\\.djhtml\\'"
-  :hook (web-mode . lsp-deferred)
-  :bind ("C-c C-v" . browse-url-of-buffer)
+  :hook
+  (web-mode . lsp-deferred)
+  :bind
+  ("C-c C-v" . browse-url-of-buffer)
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
