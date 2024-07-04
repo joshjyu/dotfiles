@@ -148,10 +148,6 @@
   :ensure t)
 (which-key-mode 1)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; COMPANY
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Company - text completion framework package
 (use-package company
   :ensure t
@@ -291,10 +287,7 @@
 
 ;; Sourcing for treesitter grammars
 (setq treesit-language-source-alist
-      '((python "https://github.com/tree-sitter/tree-sitter-python")
-	(html "https://github.com/tree-sitter/tree-sitter-html")
-	(css "https://github.com/tree-sitter/tree-sitter-css")
-	(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")))
+      '((python "https://github.com/tree-sitter/tree-sitter-python")))
 
 ;; Install any grammar libraries not already installed
 (dolist (lang treesit-language-source-alist)
@@ -302,12 +295,8 @@
     (treesit-install-language-grammar (car lang))))
 
 ;; Remap major modes to treesitter version
-;; Disabled for now...
-;; (setq major-mode-remap-alist
-;;       '((python-mode . python-ts-mode)
-;; 	(css-mode . css-ts-mode)
-;; 	(javascript-mode . js-ts-mode)
-;; 	(js2-mode . js-ts-mode)))
+(setq major-mode-remap-alist
+      '((python-mode . python-ts-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ORG
