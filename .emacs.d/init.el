@@ -153,14 +153,17 @@
   :ensure t
   :config
   (setq company-idle-delay 0.0
-        company-minimum-prefix-length 1))
+        company-minimum-prefix-length 2))
 (global-company-mode)
 
 ;; Company-box - company frontend w/ icons
 (use-package company-box
   :ensure t
   :after company
-  :hook (company-mode . company-box-mode))
+  :hook (company-mode . company-box-mode)
+  :config
+  (setq company-box-frame-top-margin 8
+        company-box-doc-enable nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LSP
