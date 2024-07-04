@@ -38,16 +38,6 @@
 ;; Consider built-in packages when updating/installing packages
 (setq package-install-upgrade-built-in t)
 
-;; Automatically update packages on startup
-(use-package auto-package-update
-  :ensure t
-  :config
-;; Delete residual old version directory when updating 
-  (setq auto-package-update-delete-old-versions t)
-  (auto-package-update-maybe))
-(add-hook 'auto-package-update-before-hook
-	  (lambda () (message "Updating packages now...")))
-
 ;; Revert buffers when the underlying file has changed
 (setopt auto-revert-avoid-polling t)
 (setopt auto-revert-interval 5)
