@@ -44,7 +44,8 @@
 (setopt auto-revert-check-vc-info t)
 (global-auto-revert-mode)
 
-;; Make adaptive wrap mode global. Useful in conjunction with visual-line mode.
+;; Make adaptive wrap mode global (no built-in global mode afaik)
+;; Useful in conjunction with visual-line mode
 (use-package adaptive-wrap
   :ensure t
   :config
@@ -86,10 +87,10 @@
   (context-menu-mode))
 
 ;; Fill-column indicator
-(setq-default fill-column 81)                 ; Set number of columns to use
+(setq-default fill-column 81)  ; Set number of columns to use
 
 ;; Default sorting order in ibuffer. Cycle with , key
-(customize-set-value 'ibuffer-default-sorting-mode (quote filename/process))
+(setq ibuffer-default-sorting-mode 'filename/process)
 
 ;; Some tweaks
 (setq visible-bell t)                  ; Flash on bell ring
