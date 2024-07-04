@@ -46,8 +46,7 @@
   (setq auto-package-update-delete-old-versions t)
   (auto-package-update-maybe))
 (add-hook 'auto-package-update-before-hook
-	  (lambda ()
-	    (message "Updating packages now...")))
+	  (lambda () (message "Updating packages now...")))
 
 ;; Revert buffers when the underlying file has changed
 (setopt auto-revert-avoid-polling t)
@@ -201,10 +200,13 @@
          ("C-c p &" . cape-sgml)
          ("C-c p r" . cape-rfc1345))
   :init
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-  (add-to-list 'completion-at-point-functions #'cape-elisp-symbol))
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-elisp-block)
+  (add-hook 'completion-at-point-functions #'cape-elisp-symbol)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
+  (add-hook 'completion-at-point-functions #'cape-history)
+  (add-hook 'completion-at-point-functions #'cape-abbrev))
 
 ;; Icons for corfu
 (use-package kind-icon
@@ -256,8 +258,12 @@
         web-mode-code-indent-offset 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; TYPESCRIPT
+;;; JS/TYPESCRIPT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package frontside-javascript
+  :ensure t
+  :init (frontside-javascript))
 
 (use-package typescript-mode
   :ensure t
