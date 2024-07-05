@@ -144,7 +144,8 @@
   :ensure t
   :config
   (setq company-idle-delay 0.0
-        company-minimum-prefix-length 2))
+        company-minimum-prefix-length 2
+        company-transformers '(company-sort-prefer-same-case-prefix)))
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "<return>") nil)
   (define-key company-active-map (kbd "RET") nil)
