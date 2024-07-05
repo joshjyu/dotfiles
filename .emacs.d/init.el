@@ -194,8 +194,6 @@
   :mode "\\.erb\\'"
   :mode "\\.mustache\\'"
   :mode "\\.djhtml\\'"
-  :hook
-  (web-mode . lsp-deferred)
   :bind
   ("C-c C-v" . browse-url-of-buffer)
   :config
