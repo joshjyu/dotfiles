@@ -170,6 +170,7 @@
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c p")
+  :hook ((web-mode . lsp-deferred))
   :config
   ;; Do not follow language server indentation
   (setq lsp-enable-indentation nil))
@@ -195,20 +196,11 @@
   :mode "\\.erb\\'"
   :mode "\\.mustache\\'"
   :mode "\\.djhtml\\'"
-  :bind
-  ("C-c C-v" . browse-url-of-buffer)
+  :bind (("C-c C-v" . browse-url-of-buffer))
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; FRONTMACS
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package frontside-javascript
-  :ensure t
-  :init (frontside-javascript))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; PYTHON
