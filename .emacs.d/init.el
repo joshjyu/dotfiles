@@ -175,7 +175,8 @@
          (lsp-mode . lsp-enable-which-key-integration))
   :config
   ;; Do not follow language server indentation
-  (setq lsp-enable-indentation nil))
+  (setq lsp-enable-indentation nil
+        lsp-apply-edits-after-file-operations nil))
 
 (use-package lsp-ui
   :ensure t
