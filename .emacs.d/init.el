@@ -163,69 +163,53 @@
         company-box-doc-enable nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LSP
+;;; TREESITTER & LSP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (use-package lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c p")
-  :hook ((web-mode . lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration))
-  :config
-  ;; Do not follow language server indentation
-  (setq lsp-enable-indentation nil
-        lsp-apply-edits-after-file-operations nil))
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (lsp-mode . lsp-diagnostics-mode)
+         (tsx-ts-mode . lsp-deferred)
+         (typescript-ts-mode . lsp-deferred)
+         (js-ts-mode . lsp-deferred)
+         (mhtml-mode . lsp-deferred)
+         (css-ts-mode . lsp-deferred))
+  :custom
+  (lsp-completion-provider :none)
+  (lsp-keep-workspace-alive nil)
+  (lsp-log-io nil)
+  (lsp-auto-configure t)
+  (lsp-enable-imenu t)
+  (lsp-enable-indentation nil)
+  (lsp-apply-edits-after-file-operations nil)
+  (lsp-enable-symbol-highlighting t)
+  (lsp-enable-text-document-color nil)
+  (lsp-completion-enable t)
+  (lsp-enable-snippet t))
 
 (use-package lsp-ui
   :ensure t
   :hook (lsp-mode . lsp-ui-mode)
   :config
-  (setq lsp-ui-doc-position 'bottom
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-position 'bottom
         lsp-ui-doc-show-with-mouse nil
+        lsp-ui-doc-show-with-cursor nil
         lsp-ui-sideline-show-diagnostics t
         lsp-ui-sideline-show-code-actions t
-        lsp-ui-sideline-show-hover t))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; WEB MODE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package web-mode
-  :ensure t
-  :mode "\\.html?\\'" 
-  :mode "\\.css\\'"
-  :mode "\\.phtml\\'"
-  :mode "\\.tpl\\.php\\'"
-  :mode "\\.[agj]sp\\'"
-  :mode "\\.as[cp]x\\'"
-  :mode "\\.erb\\'"
-  :mode "\\.mustache\\'"
-  :mode "\\.djhtml\\'"
-  :bind (("C-c C-v" . browse-url-of-buffer))
-  :config
-  (setq web-mode-markup-indent-offset 2
-        web-mode-css-indent-offset 2
-        web-mode-code-indent-offset 2))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; PYTHON
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq python-shell-interpreter "python3.12") ; Use python3.12
-
-;; Change default compile value for python-mode
-(add-hook 'python-mode-hook
-	  (lambda ()
-	    (setq-local compile-command
-			(concat "python3 " buffer-file-name))))
-
-;; And now change it for python-ts-mode
-(add-hook 'python-ts-mode-hook
-	  (lambda ()
-	    (setq-local compile-command
-			(concat "python3 " buffer-file-name))))
+        lsp-ui-sideline-show-hover nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MARKDOWN
@@ -278,23 +262,6 @@
 (setq dired-recursive-copies 'always)
 (setq dired-recursive-deletes 'always)
 (setq delete-by-moving-to-trash t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; TREESITTER
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Sourcing for treesitter grammars
-(setq treesit-language-source-alist
-      '((python "https://github.com/tree-sitter/tree-sitter-python")))
-
-;; Install any grammar libraries not already installed
-(dolist (lang treesit-language-source-alist)
-  (unless (treesit-language-available-p (car lang))
-    (treesit-install-language-grammar (car lang))))
-
-;; Remap major modes to treesitter version
-(setq major-mode-remap-alist
-      '((python-mode . python-ts-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ORG
