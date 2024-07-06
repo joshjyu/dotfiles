@@ -88,6 +88,7 @@
 
 ;; Fill-column indicator
 (setq-default fill-column 81)  ; Set number of columns to use
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
 ;; Default sorting order in ibuffer. Cycle with , key
 (setq ibuffer-default-sorting-mode 'filename/process)
@@ -170,7 +171,8 @@
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c p")
-  :hook ((web-mode . lsp-deferred))
+  :hook ((web-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration))
   :config
   ;; Do not follow language server indentation
   (setq lsp-enable-indentation nil))
@@ -179,7 +181,8 @@
   :ensure t
   :hook (lsp-mode . lsp-ui-mode)
   :config
-  (setq lsp-ui-doc-position 'bottom))
+  (setq lsp-ui-doc-position 'bottom
+        lsp-ui-doc-show-with-mouse nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; WEB MODE
