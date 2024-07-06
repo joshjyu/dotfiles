@@ -113,14 +113,15 @@
 
 ;; Vertico to enable vertical view in minibuffer
 (use-package vertico
-  :ensure t)
-(setq vertico-resize nil)
-(vertico-mode 1)
+  :ensure t
+  :config
+  (setq vertico-resize nil)
+  (vertico-mode))
 
 ;; Marginalia to enable annotations next to entries in the minibuffer
 (use-package marginalia
-  :ensure t)
-(marginalia-mode 1)
+  :ensure t
+  (marginalia-mode))
 
 ;; Consult - note the global bindings in global keybindings section
 (use-package consult
@@ -137,8 +138,8 @@
 
 ;; Which-key to display keybinding completion option
 (use-package which-key
-  :ensure t)
-(which-key-mode 1)
+  :ensure t
+  (which-key-mode))
 
 ;; Company - text completion framework package
 (use-package company
@@ -146,8 +147,10 @@
   :config
   (setq company-idle-delay 0.0
         company-minimum-prefix-length 2
+        ;; Results are more sensible when preferring same case prefix
         company-transformers '(company-sort-prefer-same-case-prefix)))
 (with-eval-after-load 'company
+  ;; Unbind RET from selecting completions, instead use TAB for that
   (define-key company-active-map (kbd "<return>") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<tab>") #'company-complete-selection))
@@ -160,6 +163,7 @@
   :hook (company-mode . company-box-mode)
   :config
   (setq company-box-frame-top-margin 8
+        ;; Use C-h at point for doc
         company-box-doc-enable nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
