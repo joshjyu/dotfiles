@@ -362,7 +362,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Default font
-(set-face-attribute 'default nil :font "Iosevka Term Curly-11")
+(set-face-attribute 'default nil :font "Iosevka Comfy-11")
 ;; Default line spacing is 0
 (setq-default line-spacing 0.1)
 
