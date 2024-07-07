@@ -120,8 +120,8 @@
 
 ;; Marginalia to enable annotations next to entries in the minibuffer
 (use-package marginalia
-  :ensure t
-  (marginalia-mode))
+  :ensure t)
+(marginalia-mode)
 
 ;; Consult - note the global bindings in global keybindings section
 (use-package consult
@@ -138,8 +138,8 @@
 
 ;; Which-key to display keybinding completion option
 (use-package which-key
-  :ensure t
-  (which-key-mode))
+  :ensure t)
+(which-key-mode)
 
 ;; Company - text completion framework package
 (use-package company
@@ -188,6 +188,7 @@
          (tsx-ts-mode . lsp-deferred)
          (typescript-ts-mode . lsp-deferred)
          (js-ts-mode . lsp-deferred)
+         (js-mode . lsp-deferred)
          (mhtml-mode . lsp-deferred)
          (css-ts-mode . lsp-deferred))
   :custom
