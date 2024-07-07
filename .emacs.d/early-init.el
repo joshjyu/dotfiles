@@ -5,7 +5,7 @@
 (setq byte-compile-warnings '(not obsolete))
 (setq warning-suppress-log-types '((comp) (bytecomp)))
 (setq native-comp-async-report-warnings-errors 'silent)
-
+(setq warning-minimum-level ':error)
 ;; Frame config
 (setq frame-resize-pixelwise t
       inhibit-splash-screen t
