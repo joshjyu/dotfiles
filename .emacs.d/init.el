@@ -93,6 +93,9 @@
 ;; Default sorting order in ibuffer. Cycle with , key
 (setq ibuffer-default-sorting-mode 'filename/process)
 
+;; hs-minor-mode for code folding
+(add-hook 'prog-mode-hook #'hs-minor-mode)
+
 ;; Some tweaks
 (setq visible-bell t)                  ; Flash on bell ring
 (pixel-scroll-precision-mode 1)        ; Smoother scrolling
@@ -477,6 +480,10 @@
 ;; Global consult keybindings
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "M-s l") 'consult-line)
+
+;; HideShow global bindings
+(global-set-key (kbd "C-c f") 'hs-hide-block)
+(global-set-key (kbd "C-c s") 'hs-show-block)
 
 ;; Company - activate manually
 ;; Important to use TAB instead of <tab> as the latter interferes with
