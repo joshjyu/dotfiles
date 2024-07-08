@@ -39,8 +39,8 @@
 (setq package-install-upgrade-built-in t)
 
 ;; Revert buffers when the underlying file has changed
-(setopt auto-revert-avoid-polling t)
-(setopt auto-revert-interval 5)
+(setopt auto-revert-avoid-polling nil)
+(setopt auto-revert-interval 2)
 (setopt auto-revert-check-vc-info t)
 (global-auto-revert-mode)
 
@@ -260,7 +260,6 @@
 
 ;; Hide details in dired mode to clean it up
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-
 ;; Do not create new buffers for every directory
 (setf dired-kill-when-opening-new-dired-buffer t)
 ;; Copy and delete recursively into directories
