@@ -145,8 +145,9 @@
 (use-package company
   :ensure t
   :config
-  (setq company-idle-delay 0.0
-        company-minimum-prefix-length 2
+  (setq company-idle-delay nil
+        ;; Manually activate with <tab> (see global bindings)
+        company-minimum-prefix-length 1
         ;; Results are more sensible when preferring same case prefix
         company-transformers '(company-sort-prefer-same-case-prefix)))
 (with-eval-after-load 'company
@@ -154,9 +155,9 @@
   (define-key company-active-map (kbd "<return>") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<tab>") #'company-complete-selection))
-(global-company-mode)
+(add-hook 'prog-mode-hook #'company-mode)
 
-;; Company-box - company frontend w/ icons
+;; Company-Box - Company frontend w/ icons
 (use-package company-box
   :ensure t
   :after company
@@ -192,6 +193,7 @@
          (mhtml-mode . lsp-deferred)
          (css-ts-mode . lsp-deferred))
   :custom
+  (read-process-output-max (* 1024 1024))
   (lsp-completion-provider :none)
   (lsp-keep-workspace-alive nil)
   (lsp-log-io nil)
@@ -202,16 +204,15 @@
 (use-package lsp-ui
   :ensure t
   :hook (lsp-mode . lsp-ui-mode)
-  :bind (("C-h" . lsp-ui-doc-focus-frame)
-         ("C-c h" . lsp-ui-doc-hide))
+  :bind (("C-c h" . lsp-ui-doc-focus-frame)
+         ("C-c q" . lsp-ui-doc-hide))
+  ;; To show doc at point: C-c p h g
   :config
   (setq lsp-ui-doc-enable t
         lsp-ui-doc-position 'at-point
         lsp-ui-doc-show-with-mouse nil
-        ;; lsp-ui-doc-show-with-cursor nil
-        lsp-ui-sideline-show-diagnostics t
-        lsp-ui-sideline-show-code-actions t
-        ;; lsp-ui-sideline-show-hover nil)
+        lsp-ui-sideline-show-diagnostics nil
+        lsp-ui-sideline-show-code-actions nil
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -220,7 +221,12 @@
 
 ;; Needed for company-capf to work correctly
 (use-package yasnippet
-  :ensure t)
+  :ensure t
+  :bind
+  (:map yas-minor-mode-map
+        ("C-<tab>" . yas-expand)
+        ("<tab>" . nil)
+        ("TAB" . nil)))
 (yas-global-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -471,3 +477,8 @@
 ;; Global consult keybindings
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "M-s l") 'consult-line)
+
+;; Company - activate manually
+;; Important to use TAB instead of <tab> as the latter interferes with
+;; minibuffer completion-at-point tab
+(global-set-key (kbd "TAB") 'company-complete)
