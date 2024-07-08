@@ -196,25 +196,32 @@
   (lsp-keep-workspace-alive nil)
   (lsp-log-io nil)
   (lsp-auto-configure t)
-  (lsp-enable-imenu t)
   (lsp-enable-indentation nil)
-  (lsp-apply-edits-after-file-operations nil)
-  (lsp-enable-symbol-highlighting t)
-  (lsp-enable-text-document-color nil)
-  (lsp-completion-enable t)
-  (lsp-enable-snippet t))
+  (lsp-apply-edits-after-file-operations nil))
 
 (use-package lsp-ui
   :ensure t
   :hook (lsp-mode . lsp-ui-mode)
+  :bind (("C-h" . lsp-ui-doc-focus-frame)
+         ("C-c h" . lsp-ui-doc-hide))
   :config
   (setq lsp-ui-doc-enable t
-        lsp-ui-doc-position 'bottom
+        lsp-ui-doc-position 'at-point
         lsp-ui-doc-show-with-mouse nil
-        lsp-ui-doc-show-with-cursor nil
+        ;; lsp-ui-doc-show-with-cursor nil
         lsp-ui-sideline-show-diagnostics t
         lsp-ui-sideline-show-code-actions t
-        lsp-ui-sideline-show-hover nil))
+        ;; lsp-ui-sideline-show-hover nil)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; YASNIPPET
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Needed for company-capf to work correctly
+(use-package yasnippet
+  :ensure t)
+(yas-global-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MARKDOWN
