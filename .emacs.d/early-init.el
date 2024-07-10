@@ -8,9 +8,9 @@
 (setq warning-minimum-level ':error)
 ;; Frame config
 (setq frame-resize-pixelwise t
-      inhibit-splash-screen t
-      inhibit-startup-screen t
-      inhibit-startup-echo-area-message (user-login-name))
+  inhibit-splash-screen t
+  inhibit-startup-screen t
+  inhibit-startup-echo-area-message (user-login-name))
 
 (menu-bar-mode -1)                   ; Hide menu bar
 (tool-bar-mode -1)                   ; Hide tool bar
