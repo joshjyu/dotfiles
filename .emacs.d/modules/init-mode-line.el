@@ -7,6 +7,22 @@
 (setcdr (assq 'vc-mode mode-line-format)
   '((:eval (replace-regexp-in-string "^ Git\-" " " vc-mode))))
 
+;; Remove process ID in LSP name in mode line
+;; github.com/emacs-lsp/lsp-mode/discussions/3729#discussioncomment-3689046
+(defun my-custom-lsp--workspace-print (workspace)
+  "Visual representation WORKSPACE."
+  (let* ((proc (lsp--workspace-cmd-proc workspace))
+          (status (lsp--workspace-status workspace))
+          (server-id
+            (-> workspace
+              lsp--workspace-client lsp--client-server-id symbol-name)))
+    (if (eq 'initialized status)
+      (format "%s" server-id)
+      (format "%s/%s" server-id status))))
+
+;; Override default lsp--workspace-print with custom one
+(advice-add #'lsp--workspace-print :override #'my-custom-lsp--workspace-print)
+
 ;; Delight customizes modes in the mode line
 (use-package delight
   :ensure t)
