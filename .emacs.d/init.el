@@ -6,7 +6,7 @@
 (add-to-list 'load-path (concat user-emacs-directory
                           (convert-standard-filename "modules/")))
 
-;; Separate custom.el file for customization clutter
+;; Separate custom.el file for custom-set-* clutter
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (when (file-exists-p custom-file)
   (load custom-file))
@@ -29,6 +29,7 @@
 (package-initialize t)
 
 ;; Use exec-path-from-shell package so Emacs env vars look the same as in shell
+;; Helpful for setting up LSP
 (use-package exec-path-from-shell
   :ensure t)
 ;; Set $PATH and exec-path from shell when in GUI frame Emacs
@@ -47,7 +48,7 @@
 (dolist (hook '(dired-mode-hook magit-mode-hook ibuffer-mode-hook))
   (add-hook hook 'auto-revert-mode))
 
-;; Make adaptive wrap mode global (no built-in global mode afaik)
+;; Make adaptive wrap mode global (no built-in global mode as far as I know)
 ;; Useful in conjunction with visual-line mode
 (use-package adaptive-wrap
   :ensure t
@@ -90,11 +91,10 @@
 (setq-default fill-column 81)  ; Set number of columns to use
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 
-;; Turn off indent tab mode by default
+;; Turn off indent tab mode
 (setq-default indent-tabs-mode nil)
 ;; Use common lisp indenting
 (setq lisp-indent-function 'common-lisp-indent-function)
-;; Change lisp indent width
 (setq lisp-indent-offset 2)
 
 ;; Default sorting order in ibuffer. Cycle with , key
@@ -106,11 +106,16 @@
 ;; Jinx - spell-checker
 (use-package jinx
   :ensure t
-  ;; Jinx mode-specific keybindings
   :bind (("M-$" . jinx-correct)
 	  ("M-n" . jinx-next)
 	  ("M-p" . jinx-previous)
 	  ("C-M-$" . jinx-languages)))
+(global-jinx-mode)
+
+;; Delight - easily customize mode names in the mode line
+;; Supported by use-package macro
+(use-package delight
+  :ensure t)
 
 ;; Some tweaks
 (setq visible-bell t)                  ; Flash on bell ring
@@ -127,7 +132,7 @@
 (electric-pair-mode 1)                 ; Enable electric pair mode
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LOAD MODULES
+;;; LOAD MODULES & CUSTOM PACKAGES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'init-bindings)
