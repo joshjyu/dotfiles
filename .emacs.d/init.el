@@ -28,41 +28,8 @@
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 (package-initialize t)
 
-;; Use exec-path-from-shell package so Emacs env vars look the same as in shell
-;; Helpful for setting up LSP
-(use-package exec-path-from-shell
-  :ensure t)
-;; Set $PATH and exec-path from shell when in GUI frame Emacs
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
-
 ;; Consider built-in packages when updating/installing packages
 (setq package-install-upgrade-built-in t)
-
-;; Revert buffers when the underlying file has changed
-;; global-auto-revert-mode was finicky, so just explicitly hooking
-;; auto-revert-mode to several specific modes
-(setopt auto-revert-avoid-polling nil)
-(setopt auto-revert-interval 2)
-(setopt auto-revert-check-vc-info t)
-(dolist (hook '(dired-mode-hook magit-mode-hook ibuffer-mode-hook))
-  (add-hook hook 'auto-revert-mode))
-
-;; Make adaptive wrap mode global (no built-in global mode as far as I know)
-;; Useful in conjunction with visual-line mode
-(use-package adaptive-wrap
-  :ensure t
-  :config
-  (progn
-    (setq-default adaptive-wrap-extra-indent 1)
-    (defun turn-on-adaptive-wrap-prefix-mode ()
-      "Turns on adaptive-wrap-prefix-mode."
-      (interactive)
-      (adaptive-wrap-prefix-mode 1))
-    (define-globalized-minor-mode global-adaptive-wrap-prefix-mode
-      adaptive-wrap-prefix-mode
-      turn-on-adaptive-wrap-prefix-mode)
-    (global-adaptive-wrap-prefix-mode 1)))
 
 ;; Auto focus new window
 ;; source: reddit.com/r/emacs/comments/aepvwq/how_to_automatically_switch_focus_to_newly/edsvalc
@@ -82,6 +49,23 @@
      (dired-directory dired-directory
        (revert-buffer-function "%b"
          ("%b - Dir: " default-directory)))))
+
+;; Use exec-path-from-shell package so Emacs env vars look the same as in shell
+;; Helpful for setting up LSP
+(use-package exec-path-from-shell
+  :ensure t)
+;; Set $PATH and exec-path from shell when in GUI frame Emacs
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+;; Revert buffers when the underlying file has changed
+;; global-auto-revert-mode was finicky, so just explicitly hooking
+;; auto-revert-mode to several specific modes
+(setopt auto-revert-avoid-polling nil)
+(setopt auto-revert-interval 2)
+(setopt auto-revert-check-vc-info t)
+(dolist (hook '(dired-mode-hook magit-mode-hook ibuffer-mode-hook))
+  (add-hook hook 'auto-revert-mode))
 
 ;; Right click gives context menu
 (when (display-graphic-p)
@@ -103,6 +87,22 @@
 ;; HideShow minor mode for code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
+(use-package adaptive-wrap
+  :ensure t
+  :config
+  ;; Make adaptive wrap mode global (no built-in global mode as far as I know)
+  ;; Useful in conjunction with visual-line mode
+  (progn
+    (setq-default adaptive-wrap-extra-indent 1)
+    (defun turn-on-adaptive-wrap-prefix-mode ()
+      "Turns on adaptive-wrap-prefix-mode."
+      (interactive)
+      (adaptive-wrap-prefix-mode 1))
+    (define-globalized-minor-mode global-adaptive-wrap-prefix-mode
+      adaptive-wrap-prefix-mode
+      turn-on-adaptive-wrap-prefix-mode)
+    (global-adaptive-wrap-prefix-mode 1)))
+
 ;; Jinx - spell-checker
 (use-package jinx
   :ensure t
@@ -112,17 +112,11 @@
 	  ("C-M-$" . jinx-languages)))
 (global-jinx-mode)
 
-;; Delight - easily customize mode names in the mode line
-;; Supported by use-package macro
-(use-package delight
-  :ensure t)
-
 ;; Some tweaks
 (setq visible-bell t)                  ; Flash on bell ring
 (pixel-scroll-precision-mode 1)        ; Smoother scrolling
 (global-display-line-numbers-mode 1)   ; Show line numbers on side
 (transient-mark-mode 1)                ; Transient mark mode
-(column-number-mode 1)                 ; Column number in mode line
 (global-visual-line-mode 1)            ; Soft wrap text at buffer edge
 (desktop-save-mode 1)                  ; Restore session
 (save-place-mode 1)                    ; Save place when last closed
@@ -139,6 +133,7 @@
 (require 'init-dired)
 (require 'init-lsp)
 (require 'init-minibuffer-and-completions)
+(require 'init-mode-line)
 (require 'init-org)
 (require 'init-prog)
 (require 'init-theme)
