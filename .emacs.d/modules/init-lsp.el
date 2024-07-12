@@ -6,6 +6,7 @@
   :ensure t
   :commands (lsp lsp-deferred)
   ;; Defer LSP server startup until the buffer is visible
+  :bind (("C-c C-d" . lsp-describe-thing-at-point))
   :init
   (setq lsp-keymap-prefix "C-c p")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
@@ -39,14 +40,16 @@
   (setq
     ;; doc config
     lsp-ui-doc-enable t
-    lsp-ui-doc-position 'at-point
-    lsp-ui-doc-show-with-mouse nil
+    lsp-ui-doc-use-childframe nil
+    lsp-ui-doc-use-webkit nil
     ;; sideline config
     lsp-ui-sideline-show-diagnostics nil
     lsp-ui-sideline-show-code-actions nil
     ;; imenu config
     lsp-ui-imenu-auto-refresh t
     lsp-ui-imenu-buffer-position 'left
-    lsp-ui-imenu-window-width 35))
+    lsp-ui-imenu-window-width 35
+    ;; peek config
+    lsp-ui-peek-enable t))
 
 (provide 'init-lsp)
