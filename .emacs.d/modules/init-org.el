@@ -59,7 +59,7 @@
   :config
   (setq org-journal-dir org-directory
     org-journal-file-type 'monthly
-    org-journal-file-format "%Y%m.org"
+    org-journal-file-format "%Y%m-journal.org"
     org-journal-time-format ""
     org-journal-hide-entries-p nil
     org-journal-carryover-items "TODO=\"TODO\"|TODO=\"LT-TODO\"|TODO=\"IDEA\"|TODO=\"MAYBE\"|TODO=\"IN-PROGRESS\"|TODO=\"WAITING\""))
