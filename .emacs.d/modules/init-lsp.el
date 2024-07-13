@@ -40,6 +40,7 @@
   (setq
     ;; doc config
     lsp-ui-doc-enable t
+    lsp-ui-doc-show-with-mouse nil
     lsp-ui-doc-use-childframe nil
     lsp-ui-doc-use-webkit nil
     ;; sideline config
