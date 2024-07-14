@@ -19,15 +19,18 @@
 ;;; YASNIPPET
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Yas needed for company-capf to work correctly
 (use-package yasnippet
   :ensure t
   :bind
-  ;; Remap bindings to accomodate my company keybindings
+  ;; Remap bindings to accommodate my company keybindings
   (:map yas-minor-mode-map
     ("C-<tab>" . yas-expand)
     ("<tab>" . nil)
     ("TAB" . nil)))
+
+(use-package yasnippet-snippets
+  :ensure t)
+
 (yas-global-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
