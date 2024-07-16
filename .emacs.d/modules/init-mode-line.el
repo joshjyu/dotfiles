@@ -2,10 +2,11 @@
 (line-number-mode)
 (column-number-mode)
 
-;; Change "git-" in vc indicator. Using all-the-icons git glyph.
+;; Change "git-" or "git:" in vc indicator to all-the-icons git glyph
 ;; C-h v all-the-icons-data/* for data alist
 (setcdr (assq 'vc-mode mode-line-format)
-  '((:eval (replace-regexp-in-string "^ Git\-" " " vc-mode))))
+  '((:eval (replace-regexp-in-string
+             "^ Git." " " vc-mode))))
 
 ;; Remove process ID in LSP name in mode line
 ;; github.com/emacs-lsp/lsp-mode/discussions/3729#discussioncomment-3689046
