@@ -53,6 +53,19 @@
 	  ("C-c C-e" . markdown-do)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; PRETTIER
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; First Prettier has to be installed locally
+;; prettier.io/docs/en/install
+;; Need node on exec-path. Also prettier uses nvm
+(use-package prettier
+  :ensure t
+  :bind
+  ;; Manually prettify buffer
+  ("C-c C-p" . prettier-prettify))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; JAVASCRIPT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
