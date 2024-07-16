@@ -11,13 +11,13 @@
 (use-package spacious-padding
   :ensure t)
 (setq spacious-padding-widths
-  '(:internal-border-width 5
+  '(:internal-border-width 15
      :header-line-width 4
-     :mode-line-width 0
+     :mode-line-width 3
      :tab-width 4
-     :right-divider-width 0
+     :right-divider-width 30
      :scroll-bar-width 8
-     :fringe-width 0))
+     :fringe-width 8))
 (spacious-padding-mode 1)
 
 ;; MODUS THEME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
