@@ -30,6 +30,7 @@
 
 (use-package yasnippet-snippets
   :ensure t)
+;; Custom snippets are in ~/.emacs.d/snippets
 
 (yas-global-mode 1)
 
