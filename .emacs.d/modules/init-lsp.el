@@ -53,4 +53,18 @@
     ;; peek config
     lsp-ui-peek-enable t))
 
+(use-package dap-mode
+  :ensure t
+  :custom
+  (lsp-enable-dap-auto-configure t)
+  :config
+  ;; (require 'dap-firefox)
+  ;; (dap-firefox-setup)
+  ;; dap-firefox seems to have been broken for awhile
+  ;; github.com/emacs-lsp/dap-mode/issues/547
+  ;; Just use developer tools
+  (require 'dap-node)
+  (dap-node-setup)
+  (dap-ui-mode 1))
+
 (provide 'init-lsp)
