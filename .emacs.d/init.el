@@ -23,10 +23,8 @@
 (setq default-frame-alist '((fullscreen . maximized)       ; start maximized
                              (alpha-background . 100)))    ; transparency
 
-(require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-(package-initialize t)
 
 ;; Consider built-in packages when updating/installing packages
 (setq package-install-upgrade-built-in t)
