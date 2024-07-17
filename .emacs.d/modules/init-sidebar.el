@@ -23,7 +23,7 @@
     dired-sidebar-theme 'icons
     dired-sidebar-use-custom-font t
     dired-sidebar-no-delete-other-windows t
-    dired-sidebar-one-instance-p t))
+    dired-sidebar-use-one-instance t))
 (add-hook 'dired-sidebar-mode-hook (lambda () (visual-line-mode -1)))
 
 (use-package ibuffer-sidebar
