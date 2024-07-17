@@ -7,6 +7,12 @@
 ;; Default line spacing is 0
 (setq-default line-spacing 0.1)
 
+;; Icon package - important to also install the Resource Fonts
+;; M-x all-the-icons-install-fonts
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
+
 ;; Spacious padding to modify various borders and lines
 (use-package spacious-padding
   :ensure t)
