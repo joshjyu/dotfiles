@@ -32,33 +32,26 @@
   :ensure t)
 (which-key-mode)
 
-;; Company ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; Company - text completion framework package
 (use-package company
   :ensure t
   :config
-  (setq company-idle-delay nil
+  (setq
+    company-tooltip-offset-display 'lines
     ;; Manually activate with <tab> (see global bindings)
+    company-idle-delay nil
     company-minimum-prefix-length 1
-    company-transformers '(company-sort-prefer-same-case-prefix)))
-;; Results are more sensible when preferring same case prefix
+    ;; Results are more sensible when preferring same case prefix
+    company-transformers '(company-sort-prefer-same-case-prefix)
+    company-format-margin-function 'company-text-icons-margin
+    company-text-icons-add-background t))
 
 (with-eval-after-load 'company
   ;; Unbind RET from selecting completions, instead use TAB for that
   (define-key company-active-map (kbd "<return>") nil)
   (define-key company-active-map (kbd "RET") nil)
   (define-key company-active-map (kbd "<tab>") #'company-complete-selection))
-(add-hook 'prog-mode-hook #'company-mode)
 
-;; Company-Box - Company frontend w/ icons
-(use-package company-box
-  :ensure t
-  :after company
-  :hook (company-mode . company-box-mode)
-  :config
-  (setq company-box-frame-top-margin 8
-    ;; Use C-h at point for doc
-    company-box-doc-enable nil))
+(add-hook 'prog-mode-hook #'company-mode)
 
 (provide 'init-minibuffer)
