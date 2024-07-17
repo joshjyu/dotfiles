@@ -61,4 +61,4 @@
     ;; Use C-h at point for doc
     company-box-doc-enable nil))
 
-(provide 'init-minibuffer-and-completions)
+(provide 'init-minibuffer)
