@@ -27,31 +27,16 @@
   (lsp-auto-configure t)
   ;; Auto-configure is t by default - auto-configures lsp-ui and company
   (lsp-enable-indentation nil)                  ; Use language indentation rules
-  (lsp-apply-edits-after-file-operations nil))
-;; Disable applying edits returned by server after file operations
-
-(use-package lsp-ui
-  :ensure t
-  :hook (lsp-mode . lsp-ui-mode)
-  :bind (("C-c h" . lsp-ui-doc-focus-frame)
-          ("C-c q" . lsp-ui-doc-hide))
-  ;; To show doc at point: C-c p h g
+  (lsp-apply-edits-after-file-operations nil)
+  ;; Disable applying edits returned by server after file operations
   :config
-  (setq
-    ;; doc config
-    lsp-ui-doc-enable t
-    lsp-ui-doc-show-with-mouse nil
-    lsp-ui-doc-use-childframe nil
-    lsp-ui-doc-use-webkit nil
-    ;; sideline config
-    lsp-ui-sideline-show-diagnostics nil
-    lsp-ui-sideline-show-code-actions nil
-    ;; imenu config
-    lsp-ui-imenu-auto-refresh t
-    lsp-ui-imenu-buffer-position 'left
-    lsp-ui-imenu-window-width 35
-    ;; peek config
-    lsp-ui-peek-enable t))
+  (setq lsp-headerline-breadcrumb-enable nil))
+
+(use-package lsp-treemacs
+  :ensure t
+  :after lsp
+  :custom
+  (treemacs-no-delete-other-windows nil))
 
 (use-package dap-mode
   :ensure t
