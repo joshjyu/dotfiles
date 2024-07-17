@@ -17,9 +17,10 @@
 
 ;; C-x C-r to open recent files buffer
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
-
 ;; C-x C-b to open ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+;; C-x C-n to +sidebar-toggle
+(global-set-key (kbd "C-x C-n") '+sidebar-toggle)
 
 ;; Global org keybindings
 (global-set-key (kbd "C-c l") #'org-store-link)

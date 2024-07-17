@@ -62,7 +62,7 @@
 (setopt auto-revert-avoid-polling nil)
 (setopt auto-revert-interval 2)
 (setopt auto-revert-check-vc-info t)
-(dolist (hook '(dired-mode-hook magit-mode-hook ibuffer-mode-hook))
+(dolist (hook '(dired-mode-hook dired-sidebar-mode-hook ibuffer-sidebar-mode magit-mode-hook ibuffer-mode-hook))
   (add-hook hook 'auto-revert-mode))
 
 ;; Right click gives context menu
@@ -78,9 +78,6 @@
 ;; Use common lisp indenting
 (setq lisp-indent-function 'common-lisp-indent-function)
 (setq lisp-indent-offset 2)
-
-;; Default sorting order in ibuffer. Cycle with , key
-(setq ibuffer-default-sorting-mode 'filename/process)
 
 ;; HideShow minor mode for code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
@@ -128,10 +125,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'init-bindings)
-(require 'init-dired)
 (require 'init-lsp)
-(require 'init-minibuffer-and-completions)
+(require 'init-minibuffer)
 (require 'init-mode-line)
 (require 'init-org)
 (require 'init-prog)
+(require 'init-sidebar)
 (require 'init-theme)
