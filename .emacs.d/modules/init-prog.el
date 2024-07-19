@@ -9,10 +9,11 @@
 (use-package treesit-auto
   :ensure t
   :custom
-  (treesit-auto-install 'prompt)             ; Prompt when installing grammars
+  (treesit-auto-install 'prompt)          ; Prompt when installing grammars
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
   ;; Add grammars to auto-mode-alist automatically
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (setopt treesit-font-lock-level '4)
   (global-treesit-auto-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
