@@ -24,7 +24,6 @@
     dired-sidebar-use-custom-font t
     dired-sidebar-no-delete-other-windows t
     dired-sidebar-use-one-instance t))
-(add-hook 'dired-sidebar-mode-hook (lambda () (visual-line-mode -1)))
 
 (use-package ibuffer-sidebar
   :ensure t
@@ -32,6 +31,12 @@
   :config
   (setq
     ibuffer-sidebar-use-custom-font t))
+
+;; The text wrapping looks strange in the sidebar modes so turn off
+;; visual line mode in dired and ibuffer sidebar modes
+(dolist
+  (hook '(dired-sidebar-mode-hook ibuffer-sidebar-mode-hook))
+  (add-hook hook (lambda () (visual-line-mode -1))))
 
 ;; Default sorting order in ibuffer. Cycle with , key
 (setq ibuffer-default-sorting-mode 'filename/process)
