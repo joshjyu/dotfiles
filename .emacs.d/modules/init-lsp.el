@@ -6,7 +6,6 @@
   :ensure t
   :commands (lsp lsp-deferred)
   ;; Defer LSP server startup until the buffer is visible
-  :bind (("C-c C-d" . lsp-describe-thing-at-point))
   :init
   (setq lsp-keymap-prefix "C-c p")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
