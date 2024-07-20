@@ -13,17 +13,17 @@
   :ensure t
   :if (display-graphic-p))
 
-;; Spacious padding to modify various borders and lines
 (use-package spacious-padding
-  :ensure t)
-(setq spacious-padding-widths
-  '(:internal-border-width 15
-     :header-line-width 4
-     :mode-line-width 3
-     :tab-width 4
-     :right-divider-width 30
-     :scroll-bar-width 8
-     :fringe-width 8))
+  :ensure t
+  :config
+  (setq spacious-padding-widths
+      '( :internal-border-width 5
+         :header-line-width 4
+         :mode-line-width 3
+         :tab-width 4
+         :right-divider-width 20
+         :scroll-bar-width 8
+         :fringe-width 8)))
 (spacious-padding-mode 1)
 
 ;; MODUS THEME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,8 +58,8 @@
        ;; Borderless mode line
        (border-mode-line-active unspecified)
        (border-mode-line-inactive unspecified)
-       ;; Invisible fringe 
-       (fringe unspecified)
+       ;; Fringe color/invisible
+       (fringe "#ffffff")
        ;; Line numbers customization
        (fg-line-number-inactive "gray50")
        (fg-line-number-active fg-main)
@@ -120,8 +120,8 @@
        ;; Borderless mode line
        (border-mode-line-active unspecified)
        (border-mode-line-inactive unspecified)
-       ;; Invisible fringe 
-       (fringe unspecified)
+       ;; Fringe color/invisible
+       (fringe "#000000")
        ;; Line numbers customization
        (fg-line-number-inactive "gray50")
        (fg-line-number-active fg-main)
