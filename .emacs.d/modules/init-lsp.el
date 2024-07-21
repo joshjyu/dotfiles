@@ -35,7 +35,10 @@
   :ensure t
   :after lsp
   :custom
-  (treemacs-no-delete-other-windows nil))
+  (setq treemacs-no-delete-other-windows nil))
+
+;; Sets lsp-treemacs window position param to right
+(setq treemacs-position 'right)
 
 (use-package dap-mode
   :ensure t
