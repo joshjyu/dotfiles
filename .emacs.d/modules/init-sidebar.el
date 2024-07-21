@@ -46,9 +46,11 @@
   '(("MyList"
       ("Dired" (or (derived-mode . dired-mode)
                  (derived-mode . dired-sidebar-mode)))
+      ("Magit" (or (mode . magit-mode)
+                 (derived-mode . magit-mode)))
       ("Stars" (starred-name))
       ("Proc" (process))
-      ("Emacs" (filename . ".emacs.d*"))      
+      ("Emacs" (filename . ".emacs.d*"))
       ("Org" (or (file-extension . "org")
                (derived-mode . org-mode)
                (derived-mode . org-agenda-mode)))
