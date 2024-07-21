@@ -7,10 +7,10 @@
 (setq tab-always-indent 'complete)
 
 ;; Windmove to easily switch windows
-(global-set-key (kbd "s-u") 'windmove-left)
-(global-set-key (kbd "s-i") 'windmove-down)
-(global-set-key (kbd "s-o") 'windmove-up)
-(global-set-key (kbd "s-p") 'windmove-right)
+(global-set-key (kbd "s-j") 'windmove-left)
+(global-set-key (kbd "s-k") 'windmove-down)
+(global-set-key (kbd "s-l") 'windmove-up)
+(global-set-key (kbd "s-;") 'windmove-right)
 
 ;; C-x C-m to toggle themes
 (global-set-key (kbd "C-c m") 'my-custom-modus-themes-toggle)
