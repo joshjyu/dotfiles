@@ -55,7 +55,7 @@
   :config
   ;; Set $PATH and exec-path from shell when in GUI frame Emacs
   (when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize)))
+    (exec-path-from-shell-initialize)))
 
 ;; Revert buffers when the underlying file has changed
 ;; global-auto-revert-mode was finicky, so just explicitly hooking
@@ -110,8 +110,8 @@
   :bind (("M-$" . jinx-correct)
 	  ("M-n" . jinx-next)
 	  ("M-p" . jinx-previous)
-	  ("C-M-$" . jinx-languages)))
-(global-jinx-mode)
+	  ("C-M-$" . jinx-languages))
+  :config (global-jinx-mode))
 
 ;; Some tweaks
 (setq visible-bell t)                  ; Flash on bell ring
@@ -158,24 +158,25 @@
 
 ;; Delight customizes modes in the mode line
 (use-package delight
-  :ensure t)
-;; Delight can also be used in use-package configs but I find it cleaner
-;; to do it separately like this
-;; Syntax note for minor modes: (delight SPEC VALUE FILE)
-;; SPEC = mode symbol, VALUE = replacement name, FILE = library that defines
-;; the minor mode (can be different like in visual-line-mode)
-(delight '((hs-minor-mode nil hideshow)
-            (yas-minor-mode nil yasnippet)
-            (company-mode nil company)
-            (company-box-mode nil company-box)
-            (which-key-mode nil which-key)
-            (jinx-mode nil jinx)
-            (eldoc-mode nil eldoc)
-            (org-indent-mode nil org-indent)
-            (adaptive-wrap-prefix-mode nil adaptive-wrap)
-            (visual-line-mode nil simple)
-            (auto-revert-mode nil autorevert)
-            (lsp-lens-mode nil lsp-lens)))
+  :ensure t
+  :config
+  ;; use-package has its own special :delight keyword but I prefer having all
+  ;; config in one spot here
+  ;; Syntax note for minor modes: (delight SPEC VALUE FILE)
+  ;; SPEC = mode symbol, VALUE = replacement name, FILE = library that defines
+  ;; the minor mode (can be different like in visual-line-mode)
+  (delight '((hs-minor-mode nil hideshow)
+              (yas-minor-mode nil yasnippet)
+              (company-mode nil company)
+              (company-box-mode nil company-box)
+              (which-key-mode nil which-key)
+              (jinx-mode nil jinx)
+              (eldoc-mode nil eldoc)
+              (org-indent-mode nil org-indent)
+              (adaptive-wrap-prefix-mode nil adaptive-wrap)
+              (visual-line-mode nil simple)
+              (auto-revert-mode nil autorevert)
+              (lsp-lens-mode nil lsp-lens))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MINIBUFFER/COMPLETION PACKAGES
@@ -185,13 +186,16 @@
 (use-package vertico
   :ensure t
   :config
-  (setq vertico-resize nil)
+  (setq
+    vertico-resize t
+    vertico-count 20)
   (vertico-mode))
 
 ;; Marginalia to enable annotations next to entries in the minibuffer
 (use-package marginalia
-  :ensure t)
-(marginalia-mode)
+  :ensure t
+  :init
+  (marginalia-mode))
 
 ;; Consult - note the global bindings in global keybindings section
 (use-package consult
@@ -200,7 +204,6 @@
 ;; Orderless - orderless completion style
 (use-package orderless
   :ensure t
-  :demand t
   :after minibuffer 
   :custom
   (completion-styles '(orderless basic))
@@ -208,12 +211,19 @@
 
 ;; Which-key to display keybinding completion option
 (use-package which-key
-  :ensure t)
-(which-key-mode)
+  :ensure t
+  :config
+  (which-key-mode))
 
 ;; Company - text completion framework package
 (use-package company
   :ensure t
+  :hook (prog-mode . company-mode)
+  :bind (:map company-active-map
+          ;; Unbind RET from selecting completions, instead use TAB for that
+          ("<return>" . nil)
+          ("RET" . nil)
+          ("<tab>" . 'company-complete-selection))
   :config
   (setq
     company-tooltip-offset-display 'lines
@@ -225,30 +235,24 @@
     company-format-margin-function 'company-text-icons-margin
     company-text-icons-add-background t))
 
-(with-eval-after-load 'company
-  ;; Unbind RET from selecting completions, instead use TAB for that
-  (define-key company-active-map (kbd "<return>") nil)
-  (define-key company-active-map (kbd "RET") nil)
-  (define-key company-active-map (kbd "<tab>") #'company-complete-selection))
-
-(add-hook 'prog-mode-hook #'company-mode)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SIDEBAR, DIRED, IBUFFER
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package dired
+  :config
+  ;; Do not create new buffers for every directory
+  (setf dired-kill-when-opening-new-dired-buffer t)
+  ;; Copy and delete recursively into directories
+  (setq dired-recursive-copies 'always
+    dired-recursive-deletes 'always
+    delete-by-moving-to-trash t))
 
 ;; Add icons in dired mode
 (use-package all-the-icons-dired
   :ensure t
   :hook ((dired-mode . all-the-icons-dired-mode)
           (dired-mode . dired-hide-details-mode)))
-
-;; Do not create new buffers for every directory
-(setf dired-kill-when-opening-new-dired-buffer t)
-;; Copy and delete recursively into directories
-(setq dired-recursive-copies 'always)
-(setq dired-recursive-deletes 'always)
-(setq delete-by-moving-to-trash t)
 
 (use-package dired-sidebar
   :ensure t
@@ -299,8 +303,7 @@
   (lambda ()
     (ibuffer-switch-to-saved-filter-groups "MyList")))
 
-;; Reverse order of ibuffer filter groups but keep [Default] at the bottom
-;; First put default at the top
+;; Put [Default] filter group at the top
 ;; Define function to move first element of a list to the last position
 ;; see: emacswiki.org/emacs/IbufferFilters#h5o-4
 (defun car-to-last (lst)
@@ -320,7 +323,7 @@
 (advice-add 'ibuffer-generate-filter-groups
   :filter-return #'jjy/reverse-list)
 
-;; Custom toggle for combining both dired and ibuffer sidebars
+;; Toggle both dired and ibuffer sidebars simultaneously
 ;; Global keybinding set to C-x C-n
 (defun +sidebar-toggle ()
   "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
@@ -337,7 +340,7 @@
 (use-package treesit-auto
   :ensure t
   :custom
-  (treesit-auto-install 'prompt)          ; Prompt when installing grammars
+  (treesit-auto-install 'prompt) ; Prompt when installing grammars
   :config
   ;; Add grammars to auto-mode-alist automatically
   (treesit-auto-add-to-auto-mode-alist 'all)
@@ -351,23 +354,24 @@
 (use-package yasnippet
   :ensure t
   :bind
-  ;; Remap bindings to accommodate my company keybindings
+  ;; Also accommodate my company keybindings by disabling tab
   (:map yas-minor-mode-map
     ("C-<tab>" . yas-expand)
     ("<tab>" . nil)
-    ("TAB" . nil)))
+    ("TAB" . nil))
+  :config
+  (yas-global-mode))
 
 (use-package yasnippet-snippets
   :ensure t)
 ;; Custom snippets are in ~/.emacs.d/snippets
-
-(yas-global-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MAGIT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package magit
+  :bind ("C-x g" . magit-status)
   :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -391,14 +395,17 @@
 (use-package prettier
   :ensure t
   :bind
-  ;; Manually prettify buffer
+  ;; Lazy load prettier and invoke manually
   ("C-c C-p" . prettier-prettify))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; JAVASCRIPT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq js-indent-level 2)
+(use-package js
+  :mode ("\\.js\\'")
+  :config
+  (setq js-indent-level 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ORG
@@ -430,26 +437,23 @@
        " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
     org-agenda-current-time-string
     "◀── now ─────────────────────────────────────────────────"
-    ))
-
-(setq org-ellipsis "…")
-(set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
-
-;; Custom capture templates
-(setq org-capture-templates
-  `(("i" "IDEA" entry (file+headline "inbox.org" "IDEAs")
-      ,(concat "* IDEA %?\n"
-         "/Entered on/ %U")
-      :prepend t)
-     ("t" "TODO" entry (file+headline "inbox.org" "TODOs")
-       ,(concat "* TODO %?\n"
-	  "/Entered on/ %U")
-       :prepend t)
-     ("l" "LT-TODO" entry (file+headline "inbox.org" "LT-TODOs")
-       ,(concat "* LT-TODO %?\n"
-	  "/Entered on/ %U")
-       :prepend t)
-     ))
+    org-ellipsis "...")
+  (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+  ;; Custom capture templates
+  (setq org-capture-templates
+    `(("i" "IDEA" entry (file+headline "inbox.org" "IDEAs")
+        ,(concat "* IDEA %?\n"
+           "/Entered on/ %U")
+        :prepend t)
+       ("t" "TODO" entry (file+headline "inbox.org" "TODOs")
+         ,(concat "* TODO %?\n"
+	    "/Entered on/ %U")
+         :prepend t)
+       ("l" "LT-TODO" entry (file+headline "inbox.org" "LT-TODOs")
+         ,(concat "* LT-TODO %?\n"
+	    "/Entered on/ %U")
+         :prepend t)
+       )))
 
 ;; Below line in case I want to add custom tags
 ;; (setq org-tag-alist '(("@work" . ?w) ("@home" . ?h) ("@laptop" . ?l))
@@ -503,18 +507,14 @@
   :ensure t
   :after lsp
   :custom
-  (setq treemacs-no-delete-other-windows nil))
-
-;; Sets lsp-treemacs window position param to right
-(setq treemacs-position 'right)
+  (setq treemacs-no-delete-other-windows nil
+    treemacs-position 'right))
 
 (use-package dap-mode
   :ensure t
   :custom
   (lsp-enable-dap-auto-configure t)
   :config
-  ;; (require 'dap-firefox)
-  ;; (dap-firefox-setup)
   ;; dap-firefox seems to have been broken for awhile
   ;; github.com/emacs-lsp/dap-mode/issues/547
   ;; Just use developer tools
@@ -584,20 +584,21 @@
   :ensure t
   :config
   (setq spacious-padding-widths
-      '( :internal-border-width 5
-         :header-line-width 4
-         :mode-line-width 3
-         :tab-width 4
-         :right-divider-width 20
-         :scroll-bar-width 8
-         :fringe-width 8)))
-(spacious-padding-mode 1)
+    '( :internal-border-width 5
+       :header-line-width 4
+       :mode-line-width 3
+       :tab-width 4
+       :right-divider-width 20
+       :scroll-bar-width 8
+       :fringe-width 8))
+  (spacious-padding-mode))
 
 ;; MODUS THEME ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package modus-themes
-  :ensure t)
-(require-theme 'modus-themes)
+  :ensure t
+  :config
+  (require-theme 'modus-themes))
 
 ;; Fill-column-indicator customization in Modus themes
 (modus-themes-with-colors
@@ -614,7 +615,6 @@
 
 ;; Customized Modus Operandi
 (defun my-custom-modus-operandi ()
-  (interactive)
   (setq modus-themes-common-palette-overrides
     '(
        ;; Colorful mode line
@@ -676,7 +676,6 @@
 
 ;; Customized Modus Vivendi
 (defun my-custom-modus-vivendi ()
-  (interactive)
   (setq modus-themes-common-palette-overrides
     '(
        ;; Colorful mode line
