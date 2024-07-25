@@ -187,7 +187,7 @@
   :ensure t
   :config
   (setq
-    vertico-resize t
+    vertico-resize nil
     vertico-count 20)
   (vertico-mode))
 
@@ -402,10 +402,7 @@
 ;;; JAVASCRIPT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package js
-  :mode ("\\.js\\'")
-  :config
-  (setq js-indent-level 2))
+(setq js-indent-level 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ORG
