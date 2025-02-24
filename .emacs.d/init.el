@@ -179,8 +179,11 @@
               (lsp-lens-mode nil lsp-lens))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MINIBUFFER/COMPLETION PACKAGES
+;;; MINIBUFFER/COMPLETION
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Emacs 30 includes which-key natively
+(which-key-mode 1)
 
 ;; Vertico to enable vertical view in minibuffer
 (use-package vertico
@@ -208,12 +211,6 @@
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
-
-;; Which-key to display keybinding completion option
-(use-package which-key
-  :ensure t
-  :config
-  (which-key-mode))
 
 ;; Company - text completion framework package
 (use-package company
