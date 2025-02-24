@@ -1,7 +1,7 @@
 ;; Garbage collection threshold - default is 800000 bytes
 ;; Helpful info by Emacs maintainer: reddit.com/r/emacs/comments/yzb77m/an_easy_trick_i_found_to_improve_emacs_startup/iwz1vek/
 (setq gc-cons-threshold 4000000)
-;; Suppress insignificant warnings
+;; Suppress less significant warnings
 (setq byte-compile-warnings '(not obsolete))
 (setq warning-suppress-log-types '((comp) (bytecomp)))
 (setq native-comp-async-report-warnings-errors 'silent)

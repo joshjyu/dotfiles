@@ -295,7 +295,8 @@
                (derived-mode . org-agenda-mode)))
       ("Prog" (or (derived-mode . prog-mode)
                 (derived-mode . mhtml-mode)
-                (derived-mode . gfm-mode)))
+                (derived-mode . gfm-mode)
+                (derived-mode . tex-mode)))
       )))
 
 ;; Tell ibuffer and ibuffer-sidebar to load the filter group automatically
@@ -371,8 +372,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package magit
-  :bind ("C-x g" . magit-status)
-  :ensure t)
+  :ensure t
+  :bind ("C-x g" . magit-status))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MARKDOWN
@@ -403,6 +404,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq js-indent-level 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LATEX
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package tex
+  :ensure auctex)
+(setq TeX-engine-set 'xetex)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ORG
