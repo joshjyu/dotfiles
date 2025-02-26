@@ -108,8 +108,8 @@
 (use-package jinx
   :ensure t
   :bind (("M-$" . jinx-correct)
-	  ("M-n" . jinx-next)
-	  ("M-p" . jinx-previous)
+	  ("M-]" . jinx-next)
+	  ("M-[" . jinx-previous)
 	  ("C-M-$" . jinx-languages))
   :config (global-jinx-mode))
 
@@ -529,6 +529,10 @@
 ;;; GLOBAL KEYBINDINGS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Note to self: s = super, S = shift
+
+;; Scroll up and down 1 line at a time
+(global-set-key (kbd "M-n") 'scroll-up-line)
+(global-set-key (kbd "M-p") 'scroll-down-line)
 
 ;; Use TAB instead of C-M-i for completion-at-point
 (setq tab-always-indent 'complete)
