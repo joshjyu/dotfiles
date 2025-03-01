@@ -138,7 +138,7 @@
 ;; C-h v all-the-icons-data/* for data alist
 (setcdr (assq 'vc-mode mode-line-format)
   '((:eval (replace-regexp-in-string
-             "^ Git." " " vc-mode))))
+             "^ Git.""git-" vc-mode))))
 
 ;; Remove process ID in LSP name in mode line
 ;; github.com/emacs-lsp/lsp-mode/discussions/3729#discussioncomment-3689046
@@ -292,6 +292,7 @@
                (derived-mode . org-agenda-mode)))
       ("Prog" (or (derived-mode . prog-mode)
                 (derived-mode . mhtml-mode)
+                (derived-mode . html-ts-mode)
                 (derived-mode . gfm-mode)
                 (derived-mode . tex-mode)))
       )))
