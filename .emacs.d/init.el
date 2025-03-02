@@ -125,6 +125,7 @@
 (icomplete-mode 1)                     ; Enable icomplete mode
 (recentf-mode 1)                       ; M-x recentf-open-files
 (electric-pair-mode 1)                 ; Enable electric pair mode
+(setq blink-cursor-blinks 0)           ; Cursor blinks forever
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MODE-LINE
