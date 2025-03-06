@@ -216,7 +216,8 @@
 ;; Company - text completion framework package
 (use-package company
   :ensure t
-  :hook (prog-mode . company-mode)
+  :hook ((prog-mode . company-mode)
+          (html-ts-mode . company-mode))
   :bind (:map company-active-map
           ;; Unbind RET from selecting completions, instead use TAB for that
           ("<return>" . nil)
