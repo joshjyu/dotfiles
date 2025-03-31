@@ -2,6 +2,8 @@
 ;;; BASIC CHANGES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(push '(fullscreen . maximized) default-frame-alist)
+
 ;; Add modules path
 (add-to-list 'load-path (concat user-emacs-directory
                           (convert-standard-filename "modules/")))
@@ -22,9 +24,6 @@
   kept-new-versions 3          ; How many of newest versions to keep
   kept-old-versions 1          ; How many of old versions to keep
   )
-
-(setq default-frame-alist '((fullscreen . maximized)       ; start maximized
-                             (alpha-background . 100)))    ; transparency
 
 ;; Consider built-in packages when updating/installing packages
 (setq package-install-upgrade-built-in t)
@@ -83,10 +82,12 @@
 
 ;; HideShow minor mode for code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
+(add-hook 'html-mode-hook #'hs-minor-mode)
 
 ;; Fill-column indicator
 (setq-default fill-column 81)  ; Set number of columns to use
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'html-mode-hook #'display-fill-column-indicator-mode)
 
 (use-package adaptive-wrap
   :ensure t
@@ -217,7 +218,8 @@
 (use-package company
   :ensure t
   :hook ((prog-mode . company-mode)
-          (html-ts-mode . company-mode))
+          (html-ts-mode . company-mode)
+          (elisp-mode . company-mode))
   :bind (:map company-active-map
           ;; Unbind RET from selecting completions, instead use TAB for that
           ("<return>" . nil)
@@ -494,12 +496,11 @@
   (setq lsp-keymap-prefix "C-c p")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
           (lsp-mode . lsp-diagnostics-mode)
-          (tsx-ts-mode . lsp-deferred)
-          (typescript-ts-mode . lsp-deferred)
-          (js-ts-mode . lsp-deferred)
+          (typescript-mode . lsp-deferred)
           (js-mode . lsp-deferred)
           (mhtml-mode . lsp-deferred)
-          (css-ts-mode . lsp-deferred))
+          (html-mode . lsp-deferred)
+          (css-mode . lsp-deferred))
   :custom
   (read-process-output-max (* 1024 1024))
   ;; Increase the amount of data which Emacs reads from the process
@@ -587,6 +588,7 @@
 
 ;; Set default font
 (set-face-attribute 'default nil :font "Iosevka Comfy-11")
+
 ;; Default line spacing is 0
 (setq-default line-spacing 0.1)
 
