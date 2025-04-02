@@ -334,6 +334,9 @@
   (ibuffer-sidebar-toggle-sidebar)
   (dired-sidebar-toggle-sidebar))
 
+;; Open sidebar on startup
+(add-hook 'emacs-startup-hook '+sidebar-toggle)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TREESITTER
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
