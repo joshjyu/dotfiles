@@ -638,6 +638,8 @@
 (defun my-custom-modus-operandi ()
   (setq modus-themes-common-palette-overrides
     '(
+       ;; Main background color
+       (bg-main "#fffbf3")
        ;; Colorful mode line
        (bg-mode-line-active "#c0d2f3")
        (bg-mode-line-inactive "#99a8c2")
@@ -699,6 +701,8 @@
 (defun my-custom-modus-vivendi ()
   (setq modus-themes-common-palette-overrides
     '(
+       ;; Main background color
+       (bg-main "#0b0a0d")
        ;; Colorful mode line
        (bg-mode-line-active "#003366")
        (bg-mode-line-inactive "#001933")
