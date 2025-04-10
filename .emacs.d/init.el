@@ -114,7 +114,7 @@
 	  ("C-M-$" . jinx-languages))
   :config (global-jinx-mode))
 
-;; Some tweaks
+;; Core tweaks
 (setq visible-bell t)                  ; Flash on bell ring
 (pixel-scroll-precision-mode 1)        ; Smoother scrolling
 (global-display-line-numbers-mode 1)   ; Show line numbers on side
@@ -126,6 +126,7 @@
 (icomplete-mode 1)                     ; Enable icomplete mode
 (recentf-mode 1)                       ; M-x recentf-open-files
 (electric-pair-mode 1)                 ; Enable electric pair mode
+(tab-bar-mode 1)                       ; Enable tab-bar-mode
 (setq blink-cursor-blinks 0)           ; Cursor blinks forever
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -136,7 +137,8 @@
 (line-number-mode)
 (column-number-mode)
 
-;; Change "git-" or "git:" in vc indicator to all-the-icons git glyph
+;; Can change "git-" or "git:" in vc indicator to something else. Currently
+;; left with default git-
 ;; C-h v all-the-icons-data/* for data alist
 (setcdr (assq 'vc-mode mode-line-format)
   '((:eval (replace-regexp-in-string
@@ -334,9 +336,6 @@
   (ibuffer-sidebar-toggle-sidebar)
   (dired-sidebar-toggle-sidebar))
 
-;; Open sidebar on startup
-(add-hook 'emacs-startup-hook '+sidebar-toggle)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TREESITTER
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -362,7 +361,7 @@
   :bind
   ;; Also accommodate my company keybindings by disabling tab
   (:map yas-minor-mode-map
-    ("C-<tab>" . yas-expand)
+    ("C-c C-y" . yas-expand)
     ("<tab>" . nil)
     ("TAB" . nil))
   :config
@@ -564,7 +563,7 @@
 ;; C-x C-b to open ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; C-x C-n to +sidebar-toggle
-(global-set-key (kbd "C-x C-n") '+sidebar-toggle)
+(global-set-key (kbd "C-c n") '+sidebar-toggle)
 
 ;; Global org keybindings
 (global-set-key (kbd "C-c l") #'org-store-link)
@@ -641,8 +640,8 @@
        ;; Main background color
        (bg-main "#fffbf3")
        ;; Colorful mode line
-       (bg-mode-line-active "#c0d2f3")
-       (bg-mode-line-inactive "#99a8c2")
+       (bg-mode-line-active "#f3f7ff")
+       (bg-mode-line-inactive "#dadee5")
        (fg-mode-line-active "#000000")
        (fg-mode-line-inactive "#4c4c4c")
        ;; Borderless mode line
@@ -650,6 +649,10 @@
        (border-mode-line-inactive unspecified)
        ;; Fringe color/invisible
        (fringe "#ffffff")
+       ;; tab-bar-mode theme
+       (bg-tab-bar bg-main)
+       (bg-tab-current bg-mode-line-active)
+       (bg-tab-other bg-mode-line-inactive)
        ;; Line numbers customization
        (fg-line-number-inactive "gray50")
        (fg-line-number-active fg-main)
@@ -713,6 +716,10 @@
        (border-mode-line-inactive unspecified)
        ;; Fringe color/invisible
        (fringe "#000000")
+       ;; tab-bar-mode theme
+       (bg-tab-bar bg-main)
+       (bg-tab-current bg-mode-line-active)
+       (bg-tab-other bg-mode-line-inactive)
        ;; Line numbers customization
        (fg-line-number-inactive "gray50")
        (fg-line-number-active fg-main)
