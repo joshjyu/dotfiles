@@ -8,10 +8,11 @@
 (add-to-list 'load-path (concat user-emacs-directory
                           (convert-standard-filename "modules/")))
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+;; Add MELPA
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 ;; Separate custom.el file for custom-set-* clutter
+;; This makes syncing/copying init.el easier
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (when (file-exists-p custom-file)
   (load custom-file))
@@ -410,6 +411,17 @@
 (setq js-indent-level 2)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; PYTHON
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package lsp-pyright
+  :ensure t
+  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp-deferred))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LATEX
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -562,8 +574,9 @@
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
 ;; C-x C-b to open ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-;; C-x C-n to +sidebar-toggle
-(global-set-key (kbd "C-c n") '+sidebar-toggle)
+;; Global flymake keybindings
+(global-set-key (kbd "C-c n") 'flymake-goto-next-error)
+(global-set-key (kbd "C-c p") 'flymake-goto-prev-error)
 
 ;; Global org keybindings
 (global-set-key (kbd "C-c l") #'org-store-link)
