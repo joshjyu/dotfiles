@@ -6,7 +6,7 @@
 
 (require 'package)
 
-;; Add MELPA
+;; Add MELPA. GNU and nonGNU are probably redundant.
 (setq package-archives
       '(("melpa" . "https://melpa.org/packages/")
         ("gnu"   . "https://elpa.gnu.org/packages/")

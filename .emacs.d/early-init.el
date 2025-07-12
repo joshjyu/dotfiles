@@ -7,6 +7,11 @@
   inhibit-splash-screen t
   inhibit-startup-screen t
   inhibit-startup-echo-area-message (user-login-name))
+;; Prevent white flash by setting background early
+(add-to-list 'default-frame-alist '(background-color . "#fffbf3"))
+(add-to-list 'default-frame-alist '(foreground-color . "#000000"))
+;; Set initial frame size to fullscreen
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;; Garbage collection threshold - default is 800000 bytes
 ;; Helpful info by Emacs maintainer: reddit.com/r/emacs/comments/yzb77m/an_easy_trick_i_found_to_improve_emacs_startup/iwz1vek/
 (setq gc-cons-threshold 4000000)
