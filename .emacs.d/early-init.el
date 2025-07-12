@@ -7,6 +7,8 @@
   inhibit-splash-screen t
   inhibit-startup-screen t
   inhibit-startup-echo-area-message (user-login-name))
+;; Set font early to prevent font changes during startup
+(add-to-list 'default-frame-alist '(font . "Iosevka Comfy-11"))
 ;; Prevent white flash by setting background early
 (add-to-list 'default-frame-alist '(background-color . "#fffbf3"))
 (add-to-list 'default-frame-alist '(foreground-color . "#000000"))
