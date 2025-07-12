@@ -4,12 +4,19 @@
 
 (push '(fullscreen . maximized) default-frame-alist)
 
+(require 'package)
+
+;; Add MELPA
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("gnu"   . "https://elpa.gnu.org/packages/")
+        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+
+(package-initialize)
+
 ;; Add modules path
 (add-to-list 'load-path (concat user-emacs-directory
                           (convert-standard-filename "modules/")))
-
-;; Add MELPA
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 ;; Separate custom.el file for custom-set-* clutter
 ;; This makes syncing/copying init.el easier
@@ -354,6 +361,89 @@
   (global-treesit-auto-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LSP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  ;; Defer LSP server startup until the buffer is visible
+  :init
+  (setq lsp-keymap-prefix "C-c p")
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+          (lsp-mode . lsp-diagnostics-mode)
+          (markdown-ts-mode . lsp-deferred)
+          (typescript-ts-mode . lsp-deferred)
+          (js-ts-mode .lsp-deferred)
+          (mhtml-mode . lsp-deferred)
+          (html-mode . lsp-deferred)
+          (css-ts-mode . lsp-deferred))
+  :custom
+  (read-process-output-max (* 1024 1024))
+  ;; Increase the amount of data which Emacs reads from the process
+  ;; Emacs default is ~4k, some language server responses are 800k-3M
+  (lsp-completion-provider :none)               ; Using Company
+  (lsp-keep-workspace-alive nil)                ; Kill server when not using
+  (lsp-log-io nil)                              ; Can turn on if troubleshooting
+  (lsp-auto-configure t)
+  ;; Auto-configure is t by default - auto-configures lsp-ui and company
+  (lsp-enable-indentation nil)                  ; Use language indentation rules
+  (lsp-apply-edits-after-file-operations nil)
+  ;; Disable applying edits returned by server after file operations
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil))
+
+(use-package lsp-treemacs
+  :ensure t
+  :after lsp
+  :custom
+  (setq treemacs-no-delete-other-windows nil
+    treemacs-position 'right))
+
+(use-package dap-mode
+  :ensure t
+  :custom
+  (lsp-enable-dap-auto-configure t)
+  :config
+  ;; dap-firefox seems to have been broken for awhile
+  ;; github.com/emacs-lsp/dap-mode/issues/547
+  ;; Just use developer tools
+  (require 'dap-node)
+  (dap-node-setup)
+  (dap-ui-mode 1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; PYTHON
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package lsp-pyright
+  :ensure t
+  :after lsp-mode
+  :hook (python-ts-mode . lsp-deferred)
+  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; JAVASCRIPT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq js-indent-level 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LATEX
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package tex
+  :ensure auctex)
+(setq TeX-engine-set 'xetex)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; CSS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq css-indent-offset 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; YASNIPPET
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -405,35 +495,11 @@
   ("C-c C-p" . prettier-prettify))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; JAVASCRIPT
+;;; VTERM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq js-indent-level 2)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; PYTHON
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package lsp-pyright
-  :ensure t
-  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
-  :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp-deferred))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LATEX
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package tex
-  :ensure auctex)
-(setq TeX-engine-set 'xetex)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; CSS
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq css-indent-offset 2)
+(use-package vterm
+  :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ORG
@@ -497,57 +563,6 @@
     org-journal-time-format ""
     org-journal-hide-entries-p nil
     org-journal-carryover-items "TODO=\"TODO\"|TODO=\"LT-TODO\"|TODO=\"IDEA\"|TODO=\"MAYBE\"|TODO=\"IN-PROGRESS\"|TODO=\"WAITING\""))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LSP
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package lsp-mode
-  :ensure t
-  :commands (lsp lsp-deferred)
-  ;; Defer LSP server startup until the buffer is visible
-  :init
-  (setq lsp-keymap-prefix "C-c p")
-  :hook ((lsp-mode . lsp-enable-which-key-integration)
-          (lsp-mode . lsp-diagnostics-mode)
-          (typescript-mode . lsp-deferred)
-          (js-mode . lsp-deferred)
-          (mhtml-mode . lsp-deferred)
-          (html-mode . lsp-deferred)
-          (css-mode . lsp-deferred))
-  :custom
-  (read-process-output-max (* 1024 1024))
-  ;; Increase the amount of data which Emacs reads from the process
-  ;; Emacs default is ~4k, some language server responses are 800k-3M
-  (lsp-completion-provider :none)               ; Using Company
-  (lsp-keep-workspace-alive nil)                ; Kill server when not using
-  (lsp-log-io nil)                              ; Can turn on if troubleshooting
-  (lsp-auto-configure t)
-  ;; Auto-configure is t by default - auto-configures lsp-ui and company
-  (lsp-enable-indentation nil)                  ; Use language indentation rules
-  (lsp-apply-edits-after-file-operations nil)
-  ;; Disable applying edits returned by server after file operations
-  :config
-  (setq lsp-headerline-breadcrumb-enable nil))
-
-(use-package lsp-treemacs
-  :ensure t
-  :after lsp
-  :custom
-  (setq treemacs-no-delete-other-windows nil
-    treemacs-position 'right))
-
-(use-package dap-mode
-  :ensure t
-  :custom
-  (lsp-enable-dap-auto-configure t)
-  :config
-  ;; dap-firefox seems to have been broken for awhile
-  ;; github.com/emacs-lsp/dap-mode/issues/547
-  ;; Just use developer tools
-  (require 'dap-node)
-  (dap-node-setup)
-  (dap-ui-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; GLOBAL KEYBINDINGS
