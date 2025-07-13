@@ -1,25 +1,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; BASIC CHANGES
+;;; INITIAL BASIC CHANGES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (push '(fullscreen . maximized) default-frame-alist)
 
 (require 'package)
-
 ;; Add MELPA. GNU and nonGNU are probably redundant.
 (setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("gnu"   . "https://elpa.gnu.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+  '(("melpa" . "https://melpa.org/packages/")
+     ("gnu"   . "https://elpa.gnu.org/packages/")
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
-(package-initialize)
+;; Consider built-in packages when updating/installing packages
+(setq package-install-upgrade-built-in t)
 
-;; Add modules path
+;; Add path for modules when needed.
 (add-to-list 'load-path (concat user-emacs-directory
                           (convert-standard-filename "modules/")))
 
 ;; Separate custom.el file for custom-set-* clutter
-;; This makes syncing/copying init.el easier
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (when (file-exists-p custom-file)
   (load custom-file))
@@ -33,12 +32,9 @@
   kept-old-versions 1          ; How many of old versions to keep
   )
 
-;; Consider built-in packages when updating/installing packages
-(setq package-install-upgrade-built-in t)
-
 ;; Auto focus new window
 ;; see: reddit.com/r/emacs/comments/aepvwq/how_to_automatically_switch_focus_to_newly/edsvalc
-(require 'cl-lib)
+(require 'cl-lib)     ; Needed for cl-find-if
 (defvar my-display-buffers-no-select '("*Completions*"))
 (define-advice display-buffer (:around (f &rest args) select-window)
   (let ((w (apply f args)))
@@ -55,14 +51,15 @@
        (revert-buffer-function "%b"
          ("%b - Dir: " default-directory)))))
 
-;; Use exec-path-from-shell package so Emacs env vars look the same as in shell
-;; Helpful for setting up LSP in particular
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  ;; Set $PATH and exec-path from shell when in GUI frame Emacs
-  (when (memq window-system '(mac ns x))
-    (exec-path-from-shell-initialize)))
+;; Right click gives context menu
+(when (display-graphic-p)
+  (context-menu-mode))
+
+;; Turn off indent tab mode
+(setq-default indent-tabs-mode nil)
+;; Use common lisp indenting
+(setq lisp-indent-function 'common-lisp-indent-function)
+(setq lisp-indent-offset 2)
 
 ;; Revert buffers when the underlying file has changed
 ;; global-auto-revert-mode was finicky, so just explicitly hooking
@@ -78,24 +75,42 @@
              ibuffer-mode-hook))
   (add-hook hook 'auto-revert-mode))
 
-;; Right click gives context menu
-(when (display-graphic-p)
-  (context-menu-mode))
-
-;; Turn off indent tab mode
-(setq-default indent-tabs-mode nil)
-;; Use common lisp indenting
-(setq lisp-indent-function 'common-lisp-indent-function)
-(setq lisp-indent-offset 2)
+;; Fill-column indicator
+(setq-default fill-column 81)  ; Set number of columns to use
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+(add-hook 'html-mode-hook #'display-fill-column-indicator-mode)
 
 ;; HideShow minor mode for code folding
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'html-mode-hook #'hs-minor-mode)
 
-;; Fill-column indicator
-(setq-default fill-column 81)  ; Set number of columns to use
-(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
-(add-hook 'html-mode-hook #'display-fill-column-indicator-mode)
+;; Core tweaks
+(setq visible-bell t)                  ; Flash on bell ring
+(pixel-scroll-precision-mode 1)        ; Smoother scrolling
+(global-display-line-numbers-mode 1)   ; Show line numbers on side
+(transient-mark-mode 1)                ; Transient mark mode
+(global-visual-line-mode 1)            ; Soft wrap text at buffer edge
+(desktop-save-mode 1)                  ; Restore session
+(save-place-mode 1)                    ; Save place when last closed
+(savehist-mode 1)                      ; Enable saving of minibuffer history
+(icomplete-mode 1)                     ; Enable icomplete mode
+(recentf-mode 1)                       ; M-x recentf-open-files
+(electric-pair-mode 1)                 ; Enable electric pair mode
+(tab-bar-mode 1)                       ; Enable tab-bar-mode
+(setq blink-cursor-blinks 0)           ; Cursor blinks forever
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; MISC EXTERNAL PACKAGES
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Makes env variables inside Emacs look the same as in user's shell
+;; This helps LSP work smoothly
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  ;; Set $PATH and exec-path from shell when in GUI frame Emacs
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
 
 (use-package adaptive-wrap
   :ensure t
@@ -121,21 +136,6 @@
 	  ("M-[" . jinx-previous)
 	  ("C-M-$" . jinx-languages))
   :config (global-jinx-mode))
-
-;; Core tweaks
-(setq visible-bell t)                  ; Flash on bell ring
-(pixel-scroll-precision-mode 1)        ; Smoother scrolling
-(global-display-line-numbers-mode 1)   ; Show line numbers on side
-(transient-mark-mode 1)                ; Transient mark mode
-(global-visual-line-mode 1)            ; Soft wrap text at buffer edge
-(desktop-save-mode 1)                  ; Restore session
-(save-place-mode 1)                    ; Save place when last closed
-(savehist-mode 1)                      ; Enable saving of minibuffer history
-(icomplete-mode 1)                     ; Enable icomplete mode
-(recentf-mode 1)                       ; M-x recentf-open-files
-(electric-pair-mode 1)                 ; Enable electric pair mode
-(tab-bar-mode 1)                       ; Enable tab-bar-mode
-(setq blink-cursor-blinks 0)           ; Cursor blinks forever
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; MODE-LINE
@@ -345,164 +345,7 @@
   (dired-sidebar-toggle-sidebar))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; TREESITTER
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Treesit-auto might eventually be obsolete as Emacs updates native
-;; treesitter in future releases
-(use-package treesit-auto
-  :ensure t
-  :custom
-  (treesit-auto-install 'prompt) ; Prompt when installing grammars
-  :config
-  ;; Add grammars to auto-mode-alist automatically
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (setopt treesit-font-lock-level '4)
-  (global-treesit-auto-mode))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LSP
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package lsp-mode
-  :ensure t
-  :commands (lsp lsp-deferred)
-  ;; Defer LSP server startup until the buffer is visible
-  :init
-  (setq lsp-keymap-prefix "C-c p")
-  :hook ((lsp-mode . lsp-enable-which-key-integration)
-          (lsp-mode . lsp-diagnostics-mode)
-          (markdown-ts-mode . lsp-deferred)
-          (typescript-ts-mode . lsp-deferred)
-          (js-ts-mode .lsp-deferred)
-          (mhtml-mode . lsp-deferred)
-          (html-mode . lsp-deferred)
-          (css-ts-mode . lsp-deferred))
-  :custom
-  (read-process-output-max (* 1024 1024))
-  ;; Increase the amount of data which Emacs reads from the process
-  ;; Emacs default is ~4k, some language server responses are 800k-3M
-  (lsp-completion-provider :none)               ; Using Company
-  (lsp-keep-workspace-alive nil)                ; Kill server when not using
-  (lsp-log-io nil)                              ; Can turn on if troubleshooting
-  (lsp-auto-configure t)
-  ;; Auto-configure is t by default - auto-configures lsp-ui and company
-  (lsp-enable-indentation nil)                  ; Use language indentation rules
-  (lsp-apply-edits-after-file-operations nil)
-  ;; Disable applying edits returned by server after file operations
-  :config
-  (setq lsp-headerline-breadcrumb-enable nil))
-
-(use-package lsp-treemacs
-  :ensure t
-  :after lsp
-  :custom
-  (setq treemacs-no-delete-other-windows nil
-    treemacs-position 'right))
-
-(use-package dap-mode
-  :ensure t
-  :custom
-  (lsp-enable-dap-auto-configure t)
-  :config
-  ;; dap-firefox seems to have been broken for awhile
-  ;; github.com/emacs-lsp/dap-mode/issues/547
-  ;; Just use developer tools
-  (require 'dap-node)
-  (dap-node-setup)
-  (dap-ui-mode 1))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; PYTHON
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package lsp-pyright
-  :ensure t
-  :after lsp-mode
-  :hook (python-ts-mode . lsp-deferred)
-  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
-  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; JAVASCRIPT
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq js-indent-level 2)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LATEX
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package tex
-  :ensure auctex)
-(setq TeX-engine-set 'xetex)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; CSS
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq css-indent-offset 2)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; YASNIPPET
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package yasnippet
-  :ensure t
-  :bind
-  ;; Also accommodate my company keybindings by disabling tab
-  (:map yas-minor-mode-map
-    ("C-c C-y" . yas-expand)
-    ("<tab>" . nil)
-    ("TAB" . nil))
-  :config
-  (yas-global-mode))
-
-(use-package yasnippet-snippets
-  :ensure t)
-;; Custom snippets are in ~/.emacs.d/snippets
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MAGIT
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package magit
-  :ensure t
-  :bind ("C-x g" . magit-status))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; MARKDOWN
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package markdown-mode
-  :ensure t
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown")
-  :bind (:map markdown-mode-map
-	  ("C-c C-e" . markdown-do)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; PRETTIER
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; First Prettier has to be installed locally
-;; prettier.io/docs/en/install
-;; Need node on exec-path. Also prettier uses nvm
-(use-package prettier
-  :ensure t
-  :bind
-  ;; Lazy load prettier and invoke manually
-  ("C-c C-p" . prettier-prettify))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; VTERM
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package vterm
-  :ensure t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ORG
+;;; ORG MODE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package org
@@ -563,6 +406,136 @@
     org-journal-time-format ""
     org-journal-hide-entries-p nil
     org-journal-carryover-items "TODO=\"TODO\"|TODO=\"LT-TODO\"|TODO=\"IDEA\"|TODO=\"MAYBE\"|TODO=\"IN-PROGRESS\"|TODO=\"WAITING\""))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; TREESITTER & LSP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Treesit-auto might eventually be obsolete as Emacs updates native
+;; treesitter in future releases
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt) ; Prompt when installing grammars
+  :config
+  ;; Add grammars to auto-mode-alist automatically
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (setopt treesit-font-lock-level '4)
+  (global-treesit-auto-mode))
+
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  ;; Defer LSP server startup until the buffer is visible
+  :init
+  (setq lsp-keymap-prefix "C-c p")
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+          (lsp-mode . lsp-diagnostics-mode)
+          (markdown-ts-mode . lsp-deferred)
+          (typescript-ts-mode . lsp-deferred)
+          (js-ts-mode .lsp-deferred)
+          (mhtml-mode . lsp-deferred)
+          (html-mode . lsp-deferred)
+          (css-ts-mode . lsp-deferred))
+  :custom
+  (read-process-output-max (* 1024 1024))
+  ;; Increase the amount of data which Emacs reads from the process
+  ;; Emacs default is ~4k, some language server responses are 800k-3M
+  (lsp-completion-provider :none)               ; Using Company
+  (lsp-keep-workspace-alive nil)                ; Kill server when not using
+  (lsp-log-io nil)                              ; Can turn on if troubleshooting
+  (lsp-auto-configure t)
+  ;; Auto-configure is t by default - auto-configures lsp-ui and company
+  (lsp-enable-indentation nil)                  ; Use language indentation rules
+  (lsp-apply-edits-after-file-operations nil)
+  ;; Disable applying edits returned by server after file operations
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil))
+
+(use-package lsp-treemacs
+  :ensure t
+  :after lsp
+  :custom
+  (setq treemacs-no-delete-other-windows nil
+    treemacs-position 'right))
+
+(use-package dap-mode
+  :ensure t
+  :custom
+  (lsp-enable-dap-auto-configure t)
+  :config
+  ;; dap-firefox seems to have been broken for awhile
+  ;; github.com/emacs-lsp/dap-mode/issues/547
+  ;; Just use developer tools
+  (require 'dap-node)
+  (dap-node-setup)
+  (dap-ui-mode 1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; CODING-SPECIFIC CONFIG
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package yasnippet
+  :ensure t
+  :bind
+  ;; Also accommodate my company keybindings by disabling tab
+  (:map yas-minor-mode-map
+    ("C-c C-y" . yas-expand)
+    ("<tab>" . nil)
+    ("TAB" . nil))
+  :config
+  (yas-global-mode))
+
+(use-package yasnippet-snippets
+  :ensure t)
+;; Custom snippets are in ~/.emacs.d/snippets
+
+(use-package magit
+  :ensure t
+  :bind ("C-x g" . magit-status))
+
+;; First Prettier has to be installed locally
+;; prettier.io/docs/en/install
+;; Need node on exec-path. Also prettier uses nvm
+(use-package prettier
+  :ensure t
+  :bind
+  ;; Lazy load prettier and invoke manually
+  ("C-c C-p" . prettier-prettify))
+
+(use-package vterm
+  :ensure t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; LANGUAGE-SPECIFIC CONFIG
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; PYTHON
+(use-package lsp-pyright
+  :ensure t
+  :after lsp-mode
+  :hook (python-ts-mode . lsp-deferred)
+  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+  )
+
+;; JS
+(setq js-indent-level 2)
+
+;; LATEX
+(use-package tex
+  :ensure auctex)
+(setq TeX-engine-set 'xetex)
+
+;; CSS
+(setq css-indent-offset 2)
+
+;; MARKDOWN
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map
+	  ("C-c C-e" . markdown-do)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; GLOBAL KEYBINDINGS
