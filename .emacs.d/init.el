@@ -131,10 +131,10 @@
 ;; Jinx - spell-checker
 (use-package jinx
   :ensure t
-  :bind (("M-$" . jinx-correct)
-	  ("M-]" . jinx-next)
-	  ("M-[" . jinx-previous)
-	  ("C-M-$" . jinx-languages))
+  :bind (("C-c j c" . jinx-correct)
+	  ("C-c j n" . jinx-next)
+	  ("C-c j p" . jinx-previous)
+	  ("C-c j l" . jinx-languages))
   :config (global-jinx-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -428,7 +428,7 @@
   :commands (lsp lsp-deferred)
   ;; Defer LSP server startup until the buffer is visible
   :init
-  (setq lsp-keymap-prefix "C-c p")
+  (setq lsp-keymap-prefix "C-c l")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
           (lsp-mode . lsp-diagnostics-mode)
           (markdown-ts-mode . lsp-deferred)
@@ -444,13 +444,18 @@
   (lsp-completion-provider :none)               ; Using Company
   (lsp-keep-workspace-alive nil)                ; Kill server when not using
   (lsp-log-io nil)                              ; Can turn on if troubleshooting
-  (lsp-auto-configure t)
-  ;; Auto-configure is t by default - auto-configures lsp-ui and company
   (lsp-enable-indentation nil)                  ; Use language indentation rules
   (lsp-apply-edits-after-file-operations nil)
   ;; Disable applying edits returned by server after file operations
   :config
-  (setq lsp-headerline-breadcrumb-enable nil))
+  (setq lsp-headerline-breadcrumb-enable t)
+  (setopt lsp-headerline-breadcrumb-segments
+    '(path-up-to-project
+       file
+       symbols)))
+
+(use-package lsp-ui
+  :ensure t)
 
 (use-package lsp-treemacs
   :ensure t
@@ -559,25 +564,25 @@
 (global-set-key (kbd "C-c m") 'my-custom-modus-themes-toggle)
 
 ;; C-x C-r to open recent files buffer
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-c r") 'recentf-open-files)
 ;; C-x C-b to open ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; Global flymake keybindings
-(global-set-key (kbd "C-c n") 'flymake-goto-next-error)
-(global-set-key (kbd "C-c p") 'flymake-goto-prev-error)
+(global-set-key (kbd "C-c f n") 'flymake-goto-next-error)
+(global-set-key (kbd "C-c f p") 'flymake-goto-prev-error)
 
 ;; Global org keybindings
-(global-set-key (kbd "C-c l") #'org-store-link)
-(global-set-key (kbd "C-c a") #'org-agenda)
-(global-set-key (kbd "C-c c") #'org-capture)
-(global-set-key (kbd "C-c j") #'org-journal-new-date-entry)
+(global-set-key (kbd "C-c o l") #'org-store-link)
+(global-set-key (kbd "C-c o a") #'org-agenda)
+(global-set-key (kbd "C-c o c") #'org-capture)
+(global-set-key (kbd "C-c o j") #'org-journal-new-date-entry)
 
 ;; Global consult keybindings
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "M-s l") 'consult-line)
 
 ;; HideShow global bindings
-(global-set-key (kbd "C-c f") 'hs-hide-block)
+(global-set-key (kbd "C-c h") 'hs-hide-block)
 (global-set-key (kbd "C-c s") 'hs-show-block)
 
 ;; Company - activate manually
