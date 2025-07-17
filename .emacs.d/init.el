@@ -503,7 +503,7 @@
   :ensure t
   :bind
   ;; Lazy load prettier and invoke manually
-  ("C-c C-p" . prettier-prettify))
+  ("C-c p" . prettier-prettify))
 
 (use-package vterm
   :ensure t)
