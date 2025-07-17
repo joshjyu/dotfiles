@@ -431,6 +431,7 @@
   (setq lsp-keymap-prefix "C-c l")
   :hook ((lsp-mode . lsp-enable-which-key-integration)
           (lsp-mode . lsp-diagnostics-mode)
+          (markdown-mode . lsp-deferred)
           (markdown-ts-mode . lsp-deferred)
           (typescript-ts-mode . lsp-deferred)
           (js-ts-mode .lsp-deferred)
