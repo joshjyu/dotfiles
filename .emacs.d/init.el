@@ -447,10 +447,9 @@
   (lsp-enable-indentation nil)                  ; Use language indentation rules
   (lsp-apply-edits-after-file-operations nil)
   ;; Disable applying edits returned by server after file operations
-  :config
-  (setq lsp-headerline-breadcrumb-enable t)
-  (setopt lsp-headerline-breadcrumb-segments
+  (lsp-headerline-breadcrumb-segments
     '(path-up-to-project
+       project
        file
        symbols)))
 
@@ -464,17 +463,15 @@
   (setq treemacs-no-delete-other-windows nil
     treemacs-position 'right))
 
+;; Note: dap-firefox seems to have been broken for awhile
+;; github.com/emacs-lsp/dap-mode/issues/547
+;; Just use developer tools for now
 (use-package dap-mode
   :ensure t
-  :custom
-  (lsp-enable-dap-auto-configure t)
   :config
-  ;; dap-firefox seems to have been broken for awhile
-  ;; github.com/emacs-lsp/dap-mode/issues/547
-  ;; Just use developer tools
-  (require 'dap-node)
-  (dap-node-setup)
-  (dap-ui-mode 1))
+  (dap-auto-configure-mode t)
+  (require 'dap-python)
+  (setq dap-python-debugger 'debugpy))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; CODING-SPECIFIC CONFIG
@@ -644,7 +641,7 @@
   (setq modus-themes-common-palette-overrides
     '(
        ;; Main background color
-       (bg-main "#fffbf3")
+       (bg-main "#faf9f5")
        ;; Colorful mode line
        (bg-mode-line-active "#f3f7ff")
        (bg-mode-line-inactive "#dadee5")

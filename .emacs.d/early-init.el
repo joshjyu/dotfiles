@@ -10,7 +10,7 @@
 ;; Set font early to prevent font changes during startup
 (add-to-list 'default-frame-alist '(font . "Iosevka Comfy-11"))
 ;; Prevent white flash by setting background early
-(add-to-list 'default-frame-alist '(background-color . "#fffbf3"))
+(add-to-list 'default-frame-alist '(background-color . "#faf9f5"))
 (add-to-list 'default-frame-alist '(foreground-color . "#000000"))
 ;; Set initial frame size to fullscreen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
