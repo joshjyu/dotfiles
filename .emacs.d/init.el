@@ -141,6 +141,8 @@
 ;;; MODE-LINE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Note that mode line theme config is in the modus theme config section
+
 (setq-default mode-line-percent-position nil)
 (line-number-mode)
 (column-number-mode)
@@ -228,7 +230,7 @@
 (use-package company
   :ensure t
   :hook ((prog-mode . company-mode)
-          (html-ts-mode . company-mode)
+          (html-mode . company-mode)
           (elisp-mode . company-mode))
   :bind (:map company-active-map
           ;; Unbind RET from selecting completions, instead use TAB for that
@@ -411,6 +413,10 @@
 ;;; TREESITTER & LSP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Sets the level of detail treesitter modes apply to syntax
+;; highlighting (1 to 4, 1 is the least, 4 the most).
+(setopt treesit-font-lock-level 4)
+
 ;; Treesit-auto might eventually be obsolete as Emacs updates native
 ;; treesitter in future releases
 (use-package treesit-auto
@@ -420,7 +426,6 @@
   :config
   ;; Add grammars to auto-mode-alist automatically
   (treesit-auto-add-to-auto-mode-alist 'all)
-  (setopt treesit-font-lock-level '4)
   (global-treesit-auto-mode))
 
 (use-package lsp-mode
@@ -432,12 +437,10 @@
   :hook ((lsp-mode . lsp-enable-which-key-integration)
           (lsp-mode . lsp-diagnostics-mode)
           (markdown-mode . lsp-deferred)
-          (markdown-ts-mode . lsp-deferred)
-          (typescript-ts-mode . lsp-deferred)
-          (js-ts-mode .lsp-deferred)
-          (mhtml-mode . lsp-deferred)
           (html-mode . lsp-deferred)
-          (css-ts-mode . lsp-deferred))
+          (css-ts-mode . lsp-deferred)
+          (js-ts-mode . lsp-deferred)
+          (typescript-ts-mode . lsp-deferred))
   :custom
   (read-process-output-max (* 1024 1024))
   ;; Increase the amount of data which Emacs reads from the process
@@ -571,6 +574,7 @@
 
 ;; Global org keybindings
 (global-set-key (kbd "C-c o l") #'org-store-link)
+(global-set-key (kbd "C-c o i") #'org-insert-link)
 (global-set-key (kbd "C-c o a") #'org-agenda)
 (global-set-key (kbd "C-c o c") #'org-capture)
 (global-set-key (kbd "C-c o j") #'org-journal-new-date-entry)
@@ -592,8 +596,8 @@
 ;;; THEMING
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Set default font
-(set-face-attribute 'default nil :font "Iosevka Comfy-11")
+;; Set default font (defined in early-init.el)
+(set-face-attribute 'default nil :font my-default-font)
 
 ;; Default line spacing is 0
 (setq-default line-spacing 0.1)
@@ -640,9 +644,9 @@
 ;; Customized Modus Operandi
 (defun my-custom-modus-operandi ()
   (setq modus-themes-common-palette-overrides
-    '(
-       ;; Main background color
-       (bg-main "#faf9f5")
+    `(
+       ;; Main background color (defined in early-init.el)
+       (bg-main ,my-background-color)
        ;; Colorful mode line
        (bg-mode-line-active "#f3f7ff")
        (bg-mode-line-inactive "#dadee5")
@@ -709,7 +713,7 @@
   (setq modus-themes-common-palette-overrides
     '(
        ;; Main background color
-       (bg-main "#0b0a0d")
+       (bg-main "#111822")
        ;; Colorful mode line
        (bg-mode-line-active "#003366")
        (bg-mode-line-inactive "#001933")
