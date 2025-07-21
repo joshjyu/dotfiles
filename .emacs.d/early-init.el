@@ -7,11 +7,15 @@
   inhibit-splash-screen t
   inhibit-startup-screen t
   inhibit-startup-echo-area-message (user-login-name))
+;; Set global variables for theme config
+(defvar my-background-color "#faf9f5")
+(defvar my-foreground-color "#000000")
+(defvar my-default-font "Iosevka Comfy-11")
 ;; Set font early to prevent font changes during startup
-(add-to-list 'default-frame-alist '(font . "Iosevka Comfy-11"))
+(add-to-list 'default-frame-alist `(font . ,my-default-font))
 ;; Prevent white flash by setting background early
-(add-to-list 'default-frame-alist '(background-color . "#faf9f5"))
-(add-to-list 'default-frame-alist '(foreground-color . "#000000"))
+(add-to-list 'default-frame-alist `(background-color . ,my-background-color))
+(add-to-list 'default-frame-alist `(foreground-color . ,my-foreground-color))
 ;; Set initial frame size to fullscreen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;; Garbage collection threshold - default is 800000 bytes
