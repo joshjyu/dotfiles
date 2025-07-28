@@ -10,7 +10,7 @@
 ;; Set global variables for theme config
 (defvar my-background-color "#faf9f5")
 (defvar my-foreground-color "#000000")
-(defvar my-default-font "Iosevka Comfy-11")
+(defvar my-default-font "Iosevka Curly-11")
 ;; Set font early to prevent font changes during startup
 (add-to-list 'default-frame-alist `(font . ,my-default-font))
 ;; Prevent white flash by setting background early
