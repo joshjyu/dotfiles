@@ -1,5 +1,7 @@
 ;; Things to install externally first:
 ;; prettier, debugpy, iosevka fonts
+;; also note that on initial load of all-the-icons-dired, need to:
+;; M-x all-the-icons-install-fonts
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; INITIAL BASIC CHANGES
@@ -291,12 +293,6 @@
     ibuffer-sidebar-use-custom-font t
     ibuffer-sidebar-mode-line-format nil))
 
-;; The text wrapping looks strange in the sidebar modes so turn off
-;; visual line mode in dired and ibuffer sidebar modes
-(dolist
-  (hook '(dired-sidebar-mode-hook ibuffer-sidebar-mode-hook))
-  (add-hook hook (lambda () (visual-line-mode -1))))
-
 ;; Filter groups for ibuffer
 (setq ibuffer-saved-filter-groups
   '(("MyList"
@@ -311,8 +307,8 @@
                (derived-mode . org-mode)
                (derived-mode . org-agenda-mode)))
       ("Prog" (or (derived-mode . prog-mode)
-                (derived-mode . mhtml-mode)
-                (derived-mode . html-ts-mode)
+                (derived-mode . mhtml-ts-mode)
+                (derived-mode . html-mode)
                 (derived-mode . gfm-mode)
                 (derived-mode . tex-mode)))
       )))
@@ -506,6 +502,7 @@
 
 ;; First Prettier has to be installed locally
 ;; prettier.io/docs/en/install
+;; github.com/prettier/prettier-emacs
 ;; Need node on exec-path. Also prettier uses nvm
 (use-package prettier
   :ensure t
