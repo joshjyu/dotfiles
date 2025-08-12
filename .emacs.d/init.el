@@ -85,7 +85,7 @@
 (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
 (add-hook 'html-mode-hook #'display-fill-column-indicator-mode)
 
-;; HideShow minor mode for code folding
+;; Hideshow mode
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 (add-hook 'html-mode-hook #'hs-minor-mode)
 
@@ -480,6 +480,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; CODING-SPECIFIC CONFIG
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; flymake config
+(custom-set-faces
+ ;; Remove underline for Flymake errors/warnings/notes
+ '(flymake-error ((t (:underline nil))))
+ '(flymake-warning ((t (:underline nil))))
+ '(flymake-note ((t (:underline nil)))))
 
 (use-package yasnippet
   :ensure t
