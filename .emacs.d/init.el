@@ -407,7 +407,8 @@
     org-journal-file-format "%Y%m-journal.org"
     org-journal-time-format ""
     org-journal-hide-entries-p nil
-    org-journal-carryover-items "TODO=\"TODO\"|TODO=\"LT-TODO\"|TODO=\"IDEA\"|TODO=\"MAYBE\"|TODO=\"IN-PROGRESS\"|TODO=\"WAITING\""))
+    org-journal-carryover-items "TODO=\"TODO\"|TODO=\"LT-TODO\"|TODO=\"IDEA\"|TODO=\"MAYBE\"|TODO=\"IN-PROGRESS\"|TODO=\"WAITING\""
+    org-journal-file-header "#+OPTIONS: ^:{}\n"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TREESITTER & LSP
@@ -550,6 +551,10 @@
   :init (setq markdown-command "multimarkdown")
   :bind (:map markdown-mode-map
 	  ("C-c C-e" . markdown-do)))
+
+;; JSON
+(use-package json-navigator
+  :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; GLOBAL KEYBINDINGS
