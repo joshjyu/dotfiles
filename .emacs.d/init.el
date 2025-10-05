@@ -533,6 +533,13 @@
   :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
   )
 
+(use-package envrc
+  :ensure t
+  :hook (after-init . envrc-global-mode)
+  :config
+  (setq envrc-reload-on-save t)
+  )
+
 ;; JS
 (setq js-indent-level 2)
 
