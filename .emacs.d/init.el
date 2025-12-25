@@ -332,11 +332,11 @@
 
 ;; Now, reverse the order of ibuffer filter groups after [Default] is moved
 ;; First define function to reverse lists
-(defun jjy/reverse-list (x)
+(defun reverse-list (x)
   (setq x (nreverse x)))
 ;; Then apply reversal to ibuffer-generate-filter-groups
 (advice-add 'ibuffer-generate-filter-groups
-  :filter-return #'jjy/reverse-list)
+  :filter-return #'reverse-list)
 
 ;; Toggle both dired and ibuffer sidebars simultaneously
 ;; Global keybinding set to C-x C-n
@@ -358,6 +358,8 @@
     org-todo-keywords '((sequence
                           "TODO" "LT-TODO" "IDEA" "MAYBE"
                           "IN-PROGRESS" "WAITING" "CANCELED" "DONE"))
+    org-export-allow-bind-keywords t
+    org-latex-images-centered nil
     org-hide-emphasis-markers t
     org-startup-indented t
     org-log-done 'time
@@ -529,7 +531,6 @@
 (use-package lsp-pyright
   :ensure t
   :after lsp-mode
-  :hook (python-ts-mode . lsp-deferred)
   :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
   )
 
@@ -538,7 +539,18 @@
   :hook (after-init . envrc-global-mode)
   :config
   (setq envrc-reload-on-save t)
+  ;; Check if in python mode before starting LSP
+  (add-hook 'envrc-mode-hook
+    (lambda ()
+      (when (derived-mode-p 'python-ts-mode)
+        (lsp-deferred))))
   )
+
+;; Function to run python unittests in project
+(defun run-unittests ()
+  (interactive)
+  (compile (format "python -m unittest -v %s"
+                   (file-name-nondirectory buffer-file-name))))
 
 ;; JS
 (setq js-indent-level 2)
@@ -661,6 +673,9 @@
     (my-custom-modus-vivendi)
     (my-custom-modus-operandi)))
 
+;; Disable any other themes just in case
+(mapc #'disable-theme custom-enabled-themes)
+
 ;; Customized Modus Operandi
 (defun my-custom-modus-operandi ()
   (setq modus-themes-common-palette-overrides
@@ -668,7 +683,7 @@
        ;; Main background color (defined in early-init.el)
        (bg-main ,my-background-color)
        ;; Colorful mode line
-       (bg-mode-line-active "#f3f7ff")
+       (bg-mode-line-active "#dae6ff")
        (bg-mode-line-inactive "#dadee5")
        (fg-mode-line-active "#000000")
        (fg-mode-line-inactive "#4c4c4c")
@@ -733,12 +748,12 @@
   (setq modus-themes-common-palette-overrides
     '(
        ;; Main background color
-       (bg-main "#111822")
+       (bg-main "#0e100c")
        ;; Colorful mode line
-       (bg-mode-line-active "#003366")
-       (bg-mode-line-inactive "#001933")
+       (bg-mode-line-active "#395d32")
+       (bg-mode-line-inactive "#0e1710")
        (fg-mode-line-active "#ffffff")
-       (fb-mode-line-inactive "#7f7f7f")
+       (fg-mode-line-inactive "#7f7f7f")
        ;; Borderless mode line
        (border-mode-line-active unspecified)
        (border-mode-line-inactive unspecified)
@@ -754,13 +769,14 @@
        (bg-line-number-inactive unspecified)
        (bg-line-number-active unspecified)
        ;; Colorful prompts
-       (fg-prompt cyan)
-       (bg-prompt bg-cyan-nuanced)
+       (fg-prompt "#7DC3CA")
+       (bg-prompt "#1d3120")
        ;; Colorful completion matches
        (fg-completion-match-0 blue)
        (fg-completion-match-1 magenta-warmer)
        (fg-completion-match-2 cyan)
        (fg-completion-match-3 red)
+       (bg-completion "#1d3120")
        (bg-completion-match-0 bg-blue-nuanced)
        (bg-completion-match-1 bg-magenta-nuanced)
        (bg-completion-match-2 bg-cyan-nuanced)
@@ -794,9 +810,6 @@
        (underline-warning yellow-faint)
        (underline-note cyan-faint)))
   (modus-themes-load-theme 'modus-vivendi))
-
-;; Disable any other themes just in case
-(mapc #'disable-theme custom-enabled-themes)
 
 ;; Desktop-save-mode also saves certain theme elements so when it saves
 ;; a session in dark themes (modus vivendi for example), certain elements get

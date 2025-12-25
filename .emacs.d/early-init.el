@@ -8,7 +8,7 @@
   inhibit-startup-screen t
   inhibit-startup-echo-area-message (user-login-name))
 ;; Set global variables for theme config
-(defvar my-background-color "#faf9f5")
+(defvar my-background-color "#fcfcfa")
 (defvar my-foreground-color "#000000")
 (defvar my-default-font "Iosevka Curly-11")
 ;; Set font early to prevent font changes during startup
