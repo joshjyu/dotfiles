@@ -526,6 +526,16 @@
 (use-package vterm
   :ensure t)
 
+(use-package agent-shell
+  :ensure t
+  :ensure-system-package
+  ;; Will automatically install Gemini if not on system
+  (gemini . "npm install -g @google/gemini-cli")
+  :config
+  (setq agent-shell-google-authentication
+    ;; Need to be first log into Gemini in terminal
+    (agent-shell-google-make-authentication :login t)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; LANGUAGE CONFIGS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
