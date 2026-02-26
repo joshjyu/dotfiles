@@ -1,5 +1,5 @@
 ;; Things to install externally first:
-;; prettier, debugpy, iosevka fonts
+;; node, npm, direnv, prettier, debugpy, iosevka fonts, ripgrep, xetex, git
 ;; also note that on initial load of all-the-icons-dired, need to:
 ;; M-x all-the-icons-install-fonts
 
@@ -220,6 +220,7 @@
   (marginalia-mode))
 
 ;; Consult - note the global bindings in global keybindings section
+;; consult-ripgrep requires installing ripgrep on system
 (use-package consult
   :ensure t)
 
@@ -486,10 +487,10 @@
 
 ;; flymake config
 (custom-set-faces
- ;; Remove underline for Flymake errors/warnings/notes
- '(flymake-error ((t (:underline nil))))
- '(flymake-warning ((t (:underline nil))))
- '(flymake-note ((t (:underline nil)))))
+  ;; Remove underline for Flymake errors/warnings/notes
+  '(flymake-error ((t (:underline nil))))
+  '(flymake-warning ((t (:underline nil))))
+  '(flymake-note ((t (:underline nil)))))
 
 (use-package yasnippet
   :ensure t
@@ -524,14 +525,15 @@
   :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; LANGUAGE-SPECIFIC CONFIG
+;;; LANGUAGE CONFIGS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; PYTHON
 (use-package lsp-pyright
   :ensure t
   :after lsp-mode
-  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+  :custom
+  (lsp-pyright-langserver-command "pyright") ; or basedpyright
   )
 
 (use-package envrc
@@ -550,10 +552,30 @@
 (defun run-unittests ()
   (interactive)
   (compile (format "python -m unittest -v %s"
-                   (file-name-nondirectory buffer-file-name))))
+             (file-name-nondirectory buffer-file-name))))
+
+;; Associate .mjs with Javascript
+(add-to-list 'auto-mode-alist '("\\.mjs\\'" . js-ts-mode))
 
 ;; JS
 (setq js-indent-level 2)
+
+(use-package nodejs-repl
+  ;; Implements a Node.js REPL interactive shell
+  :ensure t
+  :commands (nodejs-repl nodejs-repl-send-buffer)
+  :init
+  (with-eval-after-load 'js
+    (define-key js-ts-mode-map (kbd "C-c C-r") #'nodejs-repl)
+    (define-key js-ts-mode-map (kbd "C-c C-c") #'nodejs-repl-send-buffer))
+  :config
+  (setq nodejs-repl-command "node")
+  )
+
+(use-package restclient
+  ;; HTTP REST tool
+  :ensure t
+  :mode ("\\.http\\'" . restclient-mode))
 
 ;; LATEX
 (use-package tex
@@ -614,6 +636,7 @@
 ;; Global consult keybindings
 (global-set-key (kbd "C-x b") 'consult-buffer)
 (global-set-key (kbd "M-s l") 'consult-line)
+(global-set-key (kbd "M-y") 'consult-yank-pop)
 
 ;; HideShow global bindings
 (global-set-key (kbd "C-c h") 'hs-hide-block)
