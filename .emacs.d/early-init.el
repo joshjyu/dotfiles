@@ -8,14 +8,18 @@
   inhibit-startup-screen t
   inhibit-startup-echo-area-message (user-login-name))
 ;; Set global variables for theme config
+(defvar my-default-font "Iosevka Curly-11")
+;; Light theme colors
 (defvar my-background-color "#ffffff")
 (defvar my-foreground-color "#000000")
-(defvar my-default-font "Iosevka Curly-11")
+;; Dark theme colors
+(defvar my-dark-bg-color "#0d1117")
+(defvar my-dark-fg-color "#ffffff")
 ;; Set font early to prevent font changes during startup
 (add-to-list 'default-frame-alist `(font . ,my-default-font))
 ;; Prevent white flash by setting background early
-(add-to-list 'default-frame-alist `(background-color . ,my-background-color))
-(add-to-list 'default-frame-alist `(foreground-color . ,my-foreground-color))
+(add-to-list 'default-frame-alist `(background-color . ,my-dark-bg-color))
+(add-to-list 'default-frame-alist `(foreground-color . ,my-dark-fg-color))
 ;; Set initial frame size to fullscreen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;; plists provide better performance in lsp mode

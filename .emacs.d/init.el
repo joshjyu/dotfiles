@@ -506,8 +506,8 @@
   (yas-global-mode))
 
 (use-package yasnippet-snippets
+  ;; Custom snippets are in ~/.emacs.d/snippets
   :ensure t)
-;; Custom snippets are in ~/.emacs.d/snippets
 
 (use-package magit
   :ensure t
@@ -556,10 +556,10 @@
   (compile (format "python -m unittest -v %s"
              (file-name-nondirectory buffer-file-name))))
 
+;; JS
 ;; Associate .mjs with Javascript
 (add-to-list 'auto-mode-alist '("\\.mjs\\'" . js-ts-mode))
 
-;; JS
 (setq js-indent-level 2)
 
 (use-package nodejs-repl
@@ -771,14 +771,14 @@
 ;; Customized Modus Vivendi
 (defun my-custom-modus-vivendi ()
   (setq modus-themes-common-palette-overrides
-    '(
+    `(
        ;; Main background color
-       (bg-main "#0e100c")
+       (bg-main ,my-dark-bg-color)
        ;; Colorful mode line
-       (bg-mode-line-active "#395d32")
-       (bg-mode-line-inactive "#0e1710")
+       (bg-mode-line-active "#051d4d")
+       (bg-mode-line-inactive "#161b22")
        (fg-mode-line-active "#ffffff")
-       (fg-mode-line-inactive "#7f7f7f")
+       (fg-mode-line-inactive "#999999")
        ;; Borderless mode line
        (border-mode-line-active unspecified)
        (border-mode-line-inactive unspecified)
@@ -840,4 +840,4 @@
 ;; a session in dark themes (modus vivendi for example), certain elements get
 ;; messed up when loading a custom theme at startup. Hence load custom theme 
 ;; after the desktop file is read so it loads it in cleanly.
-(add-hook 'desktop-after-read-hook #'my-custom-modus-operandi)
+(add-hook 'desktop-after-read-hook #'my-custom-modus-vivendi)
