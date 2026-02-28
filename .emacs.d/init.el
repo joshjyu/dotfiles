@@ -70,14 +70,15 @@
 ;; global-auto-revert-mode was finicky, so just explicitly hooking
 ;; auto-revert-mode to several specific modes
 (setopt auto-revert-avoid-polling nil)
-(setopt auto-revert-interval 2)
+(setopt auto-revert-interval 1)
 (setopt auto-revert-check-vc-info t)
 (dolist (hook
           '(dired-mode-hook
              dired-sidebar-mode-hook
              ibuffer-sidebar-mode
              magit-mode-hook
-             ibuffer-mode-hook))
+             ibuffer-mode-hook
+             prog-mode-hook))
   (add-hook hook 'auto-revert-mode))
 
 ;; Fill-column indicator
