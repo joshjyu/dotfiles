@@ -546,8 +546,7 @@
   :ensure t
   :after lsp-mode
   :custom
-  (lsp-pyright-langserver-command "pyright") ; or basedpyright
-  )
+  (lsp-pyright-langserver-command "pyright"))
 
 (use-package envrc
   :ensure t
@@ -558,8 +557,7 @@
   (add-hook 'envrc-mode-hook
     (lambda ()
       (when (derived-mode-p 'python-ts-mode)
-        (lsp-deferred))))
-  )
+        (lsp-deferred)))))
 
 ;; Function to run python unittests in project
 (defun run-unittests ()
@@ -582,8 +580,7 @@
     (define-key js-ts-mode-map (kbd "C-c C-r") #'nodejs-repl)
     (define-key js-ts-mode-map (kbd "C-c C-c") #'nodejs-repl-send-buffer))
   :config
-  (setq nodejs-repl-command "node")
-  )
+  (setq nodejs-repl-command "node"))
 
 (use-package restclient
   ;; HTTP REST tool
@@ -712,6 +709,31 @@
 ;; Disable any other themes just in case
 (mapc #'disable-theme custom-enabled-themes)
 
+;; Add custom background face for sidebar
+(defface my-sidebar-background-face
+  '((t :inherit default))
+  "Custom face for sidebar backgrounds.")
+(defun my-apply-sidebar-background ()
+  "Remap default background and remove fringes/line numbers/margins for sidebars."
+  ;; Apply the custom background face to both default and fringe
+  (face-remap-add-relative 'default 'my-sidebar-background-face)
+  (face-remap-add-relative 'fringe 'my-sidebar-background-face)
+  ;; Disable global line numbers in this specific buffer
+  (display-line-numbers-mode -1)
+  ;; Remove left and right fringes and reduce margins to 0
+  (setq
+    left-fringe-width 0
+    right-fringe-width 0
+    left-margin-width 0
+    right-margin-width 0)
+  ;; Force strip fringes from the active window if it is already displayed
+  (when-let ((win (get-buffer-window)))
+    (set-window-fringes win 0 0)
+    (set-window-margins win 0 0)))
+;; Add hook for custom face for sidebar
+(add-hook 'dired-sidebar-mode-hook #'my-apply-sidebar-background)
+(add-hook 'ibuffer-sidebar-mode-hook #'my-apply-sidebar-background)
+
 ;; Customized Modus Operandi
 (defun my-custom-modus-operandi ()
   (setq modus-themes-common-palette-overrides
@@ -777,7 +799,9 @@
        (underline-err red-faint)
        (underline-warning yellow-faint)
        (underline-note cyan-faint)))
-  (modus-themes-load-theme 'modus-operandi))
+  (modus-themes-load-theme 'modus-operandi)
+  ;; Apply custom sidebar face after Modus loads
+  (set-face-attribute 'my-sidebar-background-face nil :background my-sidebar-bg-light))
 
 ;; Customized Modus Vivendi
 (defun my-custom-modus-vivendi ()
@@ -845,7 +869,9 @@
        (underline-err red-faint)
        (underline-warning yellow-faint)
        (underline-note cyan-faint)))
-  (modus-themes-load-theme 'modus-vivendi))
+  (modus-themes-load-theme 'modus-vivendi)
+  ;; Apply custom sidebar face after Modus loads
+  (set-face-attribute 'my-sidebar-background-face nil :background my-sidebar-bg-dark))
 
 ;; Desktop-save-mode also saves certain theme elements so when it saves
 ;; a session in dark themes (modus vivendi for example), certain elements get
