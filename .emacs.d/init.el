@@ -452,7 +452,7 @@
   ;; Increase the amount of data which Emacs reads from the process
   ;; Emacs default is ~4k, some language server responses are 800k-3M
   (read-process-output-max (* 1024 1024))
-  (lsp-completion-provider :none)               ; Using Company
+  (lsp-completion-provider :capf)               ; Bridge LSP to Company
   (lsp-keep-workspace-alive nil)                ; Kill server when not using
   (lsp-log-io nil)                              ; Can turn on if troubleshooting
   (lsp-enable-indentation nil)                  ; Use language indentation rules
