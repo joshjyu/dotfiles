@@ -1,5 +1,5 @@
 ;; Things to install externally first:
-;; node, npm, direnv, prettier, debugpy, iosevka fonts, ripgrep, xetex, git
+;; node, npm, direnv, prettier, black, debugpy, iosevka fonts, ripgrep, xetex, git
 ;; also note that on initial load of all-the-icons-dired, need to:
 ;; M-x all-the-icons-install-fonts
 
@@ -514,15 +514,23 @@
   :ensure t
   :bind ("C-x g" . magit-status))
 
-;; First Prettier has to be installed locally
 ;; prettier.io/docs/en/install
 ;; github.com/prettier/prettier-emacs
-;; Need node on exec-path. Also prettier uses nvm
+;; Need node on exec-path
 (use-package prettier
   :ensure t
   :bind
   ;; Lazy load prettier and invoke manually
   ("C-c p" . prettier-prettify))
+
+;; github.com/pythonic-emacs/blacken
+;; pip install black
+(use-package blacken
+  :ensure t
+  :hook ((python-mode . blacken-mode)
+          (python-ts-mode . blacken-mode))
+  :custom
+  (blacken-line-length 80))
 
 (use-package vterm
   :ensure t)
