@@ -21,7 +21,6 @@
 (add-to-list 'default-frame-alist `(font . ,my-default-font))
 ;; Prevent white flash by setting background early
 (add-to-list 'default-frame-alist `(background-color . ,my-dark-bg-color))
-(add-to-list 'default-frame-alist `(foreground-color . ,my-dark-fg-color))
 ;; Set initial frame size to fullscreen
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;; plists provide better performance in lsp mode
