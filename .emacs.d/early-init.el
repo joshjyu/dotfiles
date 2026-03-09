@@ -8,7 +8,7 @@
   inhibit-startup-screen t
   inhibit-startup-echo-area-message (user-login-name))
 ;; Set global variables for theme config
-(defvar my-default-font "Iosevka Curly-11")
+(defvar my-default-font "Iosevka Curly-12")
 ;; Light theme colors
 (defvar my-background-color "#ffffff")
 (defvar my-sidebar-bg-light "#f5f5f5")
