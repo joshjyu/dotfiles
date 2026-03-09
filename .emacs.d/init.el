@@ -474,15 +474,15 @@
   (setq treemacs-no-delete-other-windows nil
     treemacs-position 'right))
 
-;; Note: dap-firefox seems to have been broken for awhile
-;; github.com/emacs-lsp/dap-mode/issues/547
-;; Just use developer tools for now
 (use-package dap-mode
   :ensure t
   :config
   (dap-auto-configure-mode t)
   (require 'dap-python)
-  (setq dap-python-debugger 'debugpy))
+  (setq dap-python-debugger 'debugpy)
+  ;; Force dap-python to respect buffer-local paths
+  (defun dap-python--pyenv-executable-find (command)
+    (executable-find command)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; CODING-SPECIFIC CONFIG
