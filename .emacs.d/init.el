@@ -476,10 +476,15 @@
 
 (use-package dap-mode
   :ensure t
+  :bind (("C-c d b" . dap-breakpoint-toggle)
+          ("C-c d d" . dap-debug)
+          ("C-c d q" . dap-disconnect))
   :config
-  (dap-auto-configure-mode t)
   (require 'dap-python)
-  (setq dap-python-debugger 'debugpy)
+  (setq
+    dap-auto-configure-features '(locals breakpoints expressions controls)
+    dap-python-debugger 'debugpy)
+  ;; Must pip install "debugpy" in project's venv
   ;; Force dap-python to respect buffer-local paths
   (defun dap-python--pyenv-executable-find (command)
     (executable-find command)))
