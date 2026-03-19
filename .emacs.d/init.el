@@ -1,5 +1,6 @@
 ;; Things to install externally first:
-;; node, npm, direnv, prettier, black, debugpy, iosevka fonts, ripgrep, xetex, git
+;; node, npm, direnv, prettier, black, debugpy, iosevka fonts, ripgrep, xetex,
+;; grip, git
 ;; also note that on initial load of all-the-icons-dired, need to:
 ;; M-x all-the-icons-install-fonts
 
@@ -445,6 +446,7 @@
           (html-mode . lsp-deferred)
           (css-ts-mode . lsp-deferred)
           (js-ts-mode . lsp-deferred)
+          (js-mode . lsp-deferred)
           (typescript-ts-mode . lsp-deferred))
   :custom
   (lsp-enable-snippet nil)
@@ -535,7 +537,7 @@
   :hook ((python-mode . blacken-mode)
           (python-ts-mode . blacken-mode))
   :custom
-  (blacken-line-length 80))
+  (blacken-line-length 85))
 
 (use-package vterm
   :ensure t)
@@ -579,10 +581,11 @@
              (file-name-nondirectory buffer-file-name))))
 
 ;; JS
-;; Associate .mjs with Javascript
+;; Consider .mjs and .jsx
 (add-to-list 'auto-mode-alist '("\\.mjs\\'" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-jsx-mode))
 
-(setq js-indent-level 2)
+(setq js-indent-level 2) ; Auto indent 2 spaces
 
 (use-package nodejs-repl
   ;; Implements a Node.js REPL interactive shell
@@ -615,6 +618,13 @@
   :init (setq markdown-command "multimarkdown")
   :bind (:map markdown-mode-map
 	  ("C-c C-e" . markdown-do)))
+
+;; grip-mode to preview MD files live
+;; pip install grip
+(use-package grip-mode
+  :ensure t
+  :config
+  (setq grip-preview-use-webkit nil))
 
 ;; JSON
 (use-package json-navigator
@@ -890,4 +900,4 @@
 ;; a session in dark themes (modus vivendi for example), certain elements get
 ;; messed up when loading a custom theme at startup. Hence load custom theme 
 ;; after the desktop file is read so it loads it in cleanly.
-(add-hook 'desktop-after-read-hook #'my-custom-modus-vivendi)
+(add-hook 'desktop-after-read-hook #'my-custom-modus-operandi)
